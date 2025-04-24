@@ -3,10 +3,12 @@ from tkinter import filedialog, messagebox
 from faster_whisper import WhisperModel
 import os
 import threading
-import time
 
 selected_file = None
 model_choice = "base"
+file_label = None
+model_menu = None
+root = None
 
 def show_loader_window():
     loader = tk.Toplevel()
@@ -23,6 +25,7 @@ def show_done_window(output_path):
         selected_file = None
         model_choice = "base"
         file_label.config(text="Aucun fichier sélectionné.")
+        model_menu.set("base")
         root.deiconify()
 
     done = tk.Toplevel()
@@ -64,10 +67,9 @@ def browse_file():
         selected_file = path
         file_label.config(text=os.path.basename(path))
 
-def launch_main_window():
-    global model_choice, file_label, selected_file, root
+def setup_main_window(root):
+    global model_choice, file_label, model_menu
 
-    root = tk.Tk()
     root.title("Transcription Audio (Whisper)")
     root.geometry("400x220")
     root.resizable(False, False)
@@ -82,8 +84,7 @@ def launch_main_window():
     tk.OptionMenu(root, model_menu, "tiny", "base", "small", "medium", "large").pack()
 
     def on_transcribe():
-        nonlocal model_menu
-        global model_choice, root
+        global model_choice
         if not selected_file:
             messagebox.showerror("Erreur", "Veuillez d'abord sélectionner un fichier audio.")
             return
@@ -93,6 +94,10 @@ def launch_main_window():
 
     tk.Button(root, text="Transcrire", command=on_transcribe, bg="lightgreen").pack(pady=20)
 
+# 🔄 Point d’entrée principal
+if __name__ == "__main__":
+    import multiprocessing
+    multiprocessing.freeze_support()  # ← important pour Windows et PyInstaller
+    root = tk.Tk()
+    setup_main_window(root)
     root.mainloop()
-
-launch_main_window()
