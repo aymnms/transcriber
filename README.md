@@ -23,7 +23,6 @@
 [![Stargazers][stars-shield]][stars-url]
 [![Issues][issues-shield]][issues-url]
 [![MIT][license-shield]][license-url]
-[![LinkedIn][linkedin-shield]][linkedin-url]
 
 
 
@@ -227,6 +226,6 @@ Distributed under the MIT. See `LICENSE` for more information.
 [issues-shield]: https://img.shields.io/github/issues/aymnms/transcriber.svg?style=for-the-badge
 [issues-url]: https://github.com/aymnms/transcriber/issues
 [license-shield]: https://img.shields.io/github/license/aymnms/transcriber.svg?style=for-the-badge
-[license-url]: https://github.com/aymnms/transcriber/blob/master/LICENSE.txt
+[license-url]: https://github.com/aymnms/transcriber/blob/master/LICENSE
 [Python]: https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white
 [Python-url]: https://www.python.org/
