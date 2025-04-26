@@ -83,7 +83,11 @@
 
 A simple, lightweight application for transcribing audio files into text with Whisper (OpenAI).
 
-![Screen recording](assets/gif/screen-recording.gif)
+<div align="center">
+  <a href="https://github.com/aymnms/transcriber">
+    <img src="assets/gif/screen-recording.gif" alt="Gif how could we use the program">
+  </a>
+</div>
 
 ### Features
 
