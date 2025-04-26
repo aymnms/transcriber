@@ -33,23 +33,26 @@
 <details>
   <summary>Table of Contents</summary>
   <ol>
-    <li>
-      <a href="#about-the-project">About The Project</a>
-      <ul>
-        <li><a href="#built-with">Built With</a></li>
-      </ul>
-    </li>
-    <li>
-      <a href="#download">Download last version</a>
-    </li>
+    <li><a href="#about-the-project">About The Project</a></li>
+    <ul>
+      <li><a href="#download">Download</a></li>
+      <li><a href="#usage">Usage</a></li>
+      <li><a href="#feature">Feature</a></li>
+    </ul>
     <li>
       <a href="#getting-started">Getting Started</a>
       <ul>
+        <li><a href="#built-with">Built With</a></li>
         <li><a href="#prerequisites">Prerequisites</a></li>
         <li><a href="#installation">Installation</a></li>
+        <li><a href="#generate-app">Generate app</a></li>
+        <ul>
+          <li><a href="#generate icns">Generate icns</a></li>
+          <li><a href="#for-macos-arm">For Macos (ARM)</a></li>
+          <li><a href="#for-macos-intel">For Macos (Intel)</a></li>
+        </ul>
       </ul>
     </li>
-    <li><a href="#usage">Usage</a></li>
     <li><a href="#license">License</a></li>
   </ol>
 </details>
@@ -67,6 +70,56 @@ A simple, lightweight application for transcribing audio files into text with Wh
   </a>
 </div>
 
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+### Download
+
+[Download the latest version (.app / .exe)](https://github.com/aymnms/transcriber/releases)
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+<!-- USAGE EXAMPLES -->
+
+### Usage
+
+**Main window**
+
+![main window](assets/screenshots/1.png)
+
+**Select audio**
+
+Clic on "choisir un fichier audio" and select your audio that you want transcribe.
+
+![select audio](assets/screenshots/2.png)
+
+**Select model**
+
+Clic on "Modèle" and select the whisper model that you want to use to transcribe your audio. A 'model' is like a 'version' of an ai. More you use a big version, better the result will be. But it will takes more times. Of course, the duration of the audio has also an impact on the duration of the transcription.
+
+![select model](assets/screenshots/3.png)
+
+**Wait the moment**
+
+PS: close this window don't stop the transcription.
+
+![window wait](assets/screenshots/4.png)
+
+**Done!**
+
+This window indicate the transcription is done! You can find a txt file content the transcription at the indicate location.
+
+![window done](assets/screenshots/5.png)
+
+**Transcription content**
+
+![transcription content](assets/screenshots/6.png)
+
+**Audio test**
+
+![audio](assets/audios/NewRecording.m4a)
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
 ### Features
 
 - Simple graphical interface with Tkinter
@@ -74,6 +127,10 @@ A simple, lightweight application for transcribing audio files into text with Wh
 - Transcription with Whisper templates (from tiny to large)
 - Runs on macOS and Windows
 
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+<!-- GETTING STARTED -->
+## Getting Started
 
 ### Built With
 
@@ -84,17 +141,11 @@ A simple, lightweight application for transcribing audio files into text with Wh
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-
-## Download
-
-👉 [Download the latest version (.app / .exe)](https://github.com/aymnms/transcriber/releases)
-
-<!-- GETTING STARTED -->
-## Getting Started
-
 ### Prerequisites
 
 Need to install Python and Tkinter.
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 ### Installation
 
@@ -140,6 +191,8 @@ cp assets/logo.png                MyIcon.iconset/icon_512x512@2x.png
 iconutil -c icns MyIcon.iconset
 ```
 
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
 #### For Macos (ARM)
 
 > Only on Mac ARM
@@ -147,6 +200,8 @@ iconutil -c icns MyIcon.iconset
 ```bash
 pyinstaller --windowed --onedir app_whisper.py --name "Transcriber (ARM)" --icon assets/MyIcon.icns
 ```
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 #### For Macos (Intel)
 
@@ -180,47 +235,6 @@ pip install -r requirements.txt
 ```bash
 arch -x86_64 pyinstaller --windowed --onedir app_whisper.py --name "Transcriber (Intel)" --icon assets/MyIcon.icns
 ```
-
-<!-- USAGE EXAMPLES -->
-
-## Usage
-
-**Main window**
-
-![main window](assets/screenshots/1.png)
-
-**Select audio**
-
-Clic on "choisir un fichier audio" and select your audio that you want transcribe.
-
-![select audio](assets/screenshots/2.png)
-
-**Select model**
-
-Clic on "Modèle" and select the whisper model that you want to use to transcribe your audio. A 'model' is like a 'version' of an ai. More you use a big version, better the result will be. But it will takes more times. Of course, the duration of the audio has also an impact on the duration of the transcription.
-
-![select model](assets/screenshots/3.png)
-
-**Wait the moment**
-
-PS: close this window don't stop the transcription.
-
-![window wait](assets/screenshots/4.png)
-
-**Done!**
-
-This window indicate the transcription is done! You can find a txt file content the transcription at the indicate location.
-
-![window done](assets/screenshots/5.png)
-
-**Transcription content**
-
-![transcription content](assets/screenshots/6.png)
-
-**Audio test**
-
-![audio](assets/audios/NewRecording.m4a)
-
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 <!-- LICENSE -->
