@@ -196,6 +196,7 @@ iconutil -c icns MyIcon.iconset
 #### For Macos (ARM)
 
 > Only on Mac ARM
+> 
 > Generate into a dist folder
 ```bash
 pyinstaller --windowed --onedir app_whisper.py --name "Transcriber (ARM)" --icon assets/MyIcon.icns
@@ -206,6 +207,7 @@ pyinstaller --windowed --onedir app_whisper.py --name "Transcriber (ARM)" --icon
 #### For Macos (Intel)
 
 > This version can be readable on macos intel AND macos arm.
+> 
 > Generate into a dist folder
 ```bash
 arch -x86_64 pyinstaller --windowed --onedir app_whisper.py --name "Transcriber  (Intel)" --icon assets/MyIcon.icns
