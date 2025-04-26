@@ -1,23 +1,5 @@
-<!-- Improved compatibility of back to top link: See: https://github.com/othneildrew/Best-README-Template/pull/73 -->
 <a id="readme-top"></a>
-<!--
-*** Thanks for checking out the Best-README-Template. If you have a suggestion
-*** that would make this better, please fork the repo and create a pull request
-*** or simply open an issue with the tag "enhancement".
-*** Don't forget to give the project a star!
-*** Thanks again! Now go create something AMAZING! :D
--->
 
-
-
-<!-- PROJECT SHIELDS -->
-<!--
-*** I'm using markdown "reference style" links for readability.
-*** Reference links are enclosed in brackets [ ] instead of parentheses ( ).
-*** See the bottom of this document for the declaration of the reference variables
-*** for contributors-url, forks-url, etc. This is an optional, concise syntax you may use.
-*** https://www.markdownguide.org/basic-syntax/#reference-style-links
--->
 [![Contributors][contributors-shield]][contributors-url]
 [![Forks][forks-shield]][forks-url]
 [![Stargazers][stars-shield]][stars-url]
@@ -158,19 +140,45 @@ cp assets/logo.png                MyIcon.iconset/icon_512x512@2x.png
 iconutil -c icns MyIcon.iconset
 ```
 
-#### Macos (ARM)
+#### For Macos (ARM)
 
+> Only on Mac ARM
 > Generate into a dist folder
 ```bash
-pyinstaller --windowed --onedir app_whisper.py --name "Transcriber" --icon assets/MyIcon.icns
+pyinstaller --windowed --onedir app_whisper.py --name "Transcriber (ARM)" --icon assets/MyIcon.icns
 ```
 
-#### Macos (Intel)
+#### For Macos (Intel)
 
-> Generate into a dist folder
 > This version can be readable on macos intel AND macos arm.
+> Generate into a dist folder
 ```bash
-arch -x86_64 pyinstaller --windowed --onedir app_whisper.py --name "Transcriber" --icon assets/MyIcon.icns
+arch -x86_64 pyinstaller --windowed --onedir app_whisper.py --name "Transcriber  (Intel)" --icon assets/MyIcon.icns
+```
+
+⚠️ On Mac ARM, if you want to generate an app for Mac Intel, you need to reinstall the project with Rosetta to virtualise an Intel architecture.
+
+1. Quit your terminal and reopen it with Rosetta
+
+![Open terminal with Rosetta](assets/screenshots/7.png)
+
+2. Recreate a venv only for intel version
+```bash
+python3 -m venv .venv-intel
+```
+
+3. Use this venv
+```bash
+source .venv-intel/bin/activate
+```
+4. Install pip dependence (with arch environment, for intel)
+```bash
+pip install -r requirements.txt
+```
+
+5. Generate a .app for Intel (from Mac ARM to Mac Intel also compatible with Mac ARM)
+```bash
+arch -x86_64 pyinstaller --windowed --onedir app_whisper.py --name "Transcriber (Intel)" --icon assets/MyIcon.icns
 ```
 
 <!-- USAGE EXAMPLES -->
