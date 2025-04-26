@@ -145,28 +145,36 @@ python3 app_whisper.py
 
 ### Generate app
 
-#### Macos
+#### Generate icns
+
+```bash
+mkdir MyIcon.iconset
+sips -z 16 16     assets/logo.png --out MyIcon.iconset/icon_16x16.png
+sips -z 32 32     assets/logo.png --out MyIcon.iconset/icon_16x16@2x.png
+sips -z 32 32     assets/logo.png --out MyIcon.iconset/icon_32x32.png
+sips -z 64 64     assets/logo.png --out MyIcon.iconset/icon_32x32@2x.png
+sips -z 128 128   assets/logo.png --out MyIcon.iconset/icon_128x128.png
+sips -z 256 256   assets/logo.png --out MyIcon.iconset/icon_128x128@2x.png
+sips -z 256 256   assets/logo.png --out MyIcon.iconset/icon_256x256.png
+sips -z 512 512   assets/logo.png --out MyIcon.iconset/icon_256x256@2x.png
+sips -z 512 512   assets/logo.png --out MyIcon.iconset/icon_512x512.png
+cp assets/logo.png                MyIcon.iconset/icon_512x512@2x.png
+iconutil -c icns MyIcon.iconset
+```
+
+#### Macos (ARM)
 
 > Generate into a dist folder
 ```bash
 pyinstaller --windowed --onedir app_whisper.py --name "Transcriber" --icon assets/MyIcon.icns
 ```
 
-##### Generate icns
+#### Macos (Intel)
 
+> Generate into a dist folder
+> This version can be readable on macos intel AND macos arm.
 ```bash
-mkdir MyIcon.iconset
-sips -z 16 16     logo.png --out MyIcon.iconset/icon_16x16.png
-sips -z 32 32     logo.png --out MyIcon.iconset/icon_16x16@2x.png
-sips -z 32 32     logo.png --out MyIcon.iconset/icon_32x32.png
-sips -z 64 64     logo.png --out MyIcon.iconset/icon_32x32@2x.png
-sips -z 128 128   logo.png --out MyIcon.iconset/icon_128x128.png
-sips -z 256 256   logo.png --out MyIcon.iconset/icon_128x128@2x.png
-sips -z 256 256   logo.png --out MyIcon.iconset/icon_256x256.png
-sips -z 512 512   logo.png --out MyIcon.iconset/icon_256x256@2x.png
-sips -z 512 512   logo.png --out MyIcon.iconset/icon_512x512.png
-cp logo.png                MyIcon.iconset/icon_512x512@2x.png
-iconutil -c icns MyIcon.iconset
+arch -x86_64 pyinstaller --windowed --onedir app_whisper.py --name "Transcriber" --icon assets/MyIcon.icns
 ```
 
 <!-- USAGE EXAMPLES -->
