@@ -33,7 +33,7 @@ Contrainte transverse à tous les jalons : **aucune régression macOS** (vérifi
 - [ ] J1.5 TDD : extraire `domain/whisper_models.py` (`is_valid_model_name`, liste des modèles supportés)
 - [ ] J1.6 Réécrire `app_whisper.py` pour consommer `domain/` sans changer le comportement observable (macOS)
 - [ ] J1.7 Corriger le bug latent : `try/except` autour de `transcribe_task`, avec test fonctionnel sur `platform/` (fermeture du loader + message d'erreur au lieu d'un blocage silencieux)
-- [ ] J1.8 Nettoyer `requirements.txt` (marqueurs `sys_platform` pour `macholib`/`altgraph`), pinner la version de Python (`>=3.10,<3.13`)
+- [ ] J1.8 Nettoyer `requirements.txt` (marqueur `sys_platform` pour `macholib`, seul paquet réellement macOS-only), pinner la version de Python (`>=3.10,<3.13`)
 - [ ] J1.9 Vérification manuelle macOS (lancement de `app_whisper.py` en local) pour confirmer l'absence de régression avant la mise en place de la CI
 
 **J2 — CI multi-OS** (réf. AUDIT §2.5, §4 du brief)

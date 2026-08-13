@@ -53,7 +53,7 @@ Toute l'orchestration (2–6) tourne dans un `threading.Thread` daemon pour ne p
 
 ## 2.3 Dépendances et accélération matérielle
 
-**Bibliothèques tierces** (extrait de `requirements.txt`, 29 lignes) : `faster-whisper`, `ctranslate2`, `av` (PyAV), `numpy`, `onnxruntime`, `huggingface-hub`, `tokenizers`, `pyinstaller` + `pyinstaller-hooks-contrib`, et deux paquets **spécifiques au packaging macOS** : `macholib` et `altgraph` (utilisés par PyInstaller pour analyser/relier des binaires Mach-O — inutiles sur Windows/Linux, où PyInstaller utilise d'autres mécanismes). Aucun binaire n'est embarqué dans le dépôt lui-même (pas de `ffmpeg`, pas de `.dylib`/`.dll`/`.so` commités).
+**Bibliothèques tierces** (extrait de `requirements.txt`, 29 lignes) : `faster-whisper`, `ctranslate2`, `av` (PyAV), `numpy`, `onnxruntime`, `huggingface-hub`, `tokenizers`, `pyinstaller` + `pyinstaller-hooks-contrib`, et `macholib` — **spécifique au packaging macOS** (utilisé par PyInstaller pour analyser/relier des binaires Mach-O ; PyInstaller lui-même le déclare conditionnel à `sys_platform == "darwin"` dans ses propres dépendances, donc l'épingler ici sans condition est redondant et inutile sur Windows/Linux). `altgraph`, en revanche, est une dépendance **générique** de PyInstaller (graphe de dépendances de l'analyse de build), utilisée sur les trois OS — elle n'est pas à isoler. Aucun binaire n'est embarqué dans le dépôt lui-même (pas de `ffmpeg`, pas de `.dylib`/`.dll`/`.so` commités).
 
 **Question tranchée — accélération matérielle macOS-only ?**
 Réponse : **non, il n'y en a pas.** `ctranslate2` (le moteur d'inférence sous-jacent à `faster-whisper`) ne supporte que deux backends : **CPU** et **CUDA**. Il n'existe **aucun support Metal, CoreML ou MPS** dans `ctranslate2` — donc rien de tel n'est utilisé ici, ni directement, ni indirectement. Sur macOS aujourd'hui, l'app tourne donc déjà en **CPU pur** (aucun GPU Apple Silicon n'est exploité).
@@ -82,7 +82,7 @@ Conséquence directe pour le portage : comme le code ne fixe jamais `device=`, l
 ### Windows
 - Aucune instruction de build Windows dans le README (uniquement macOS ARM/Intel) — à écrire.
 - `assets/logo.ico` **existe déjà** dans le dépôt, prêt à l'emploi pour `--icon` sous PyInstaller — signe qu'une tentative Windows a été commencée côté assets mais jamais finalisée côté script/doc/CI.
-- `macholib`/`altgraph` dans `requirements.txt` sont un poids mort inutile sous Windows (installables mais sans fonction) — cosmétique, pas bloquant, mais à nettoyer (§2.8).
+- `macholib` dans `requirements.txt` est un poids mort inutile sous Windows (installable mais sans fonction) — cosmétique, pas bloquant, mais à nettoyer (§2.8).
 - Aucune release Windows n'a jamais été produite ni testée (confirmé par la page Releases, voir §2.4).
 - Aucune CI n'a jamais validé quoi que ce soit sous Windows.
 
@@ -128,7 +128,7 @@ Ce choix garde une barre d'exigence **cohérente entre les trois OS** : aucun ne
 |---|---|---|---|
 | 1 | Extraire les fonctions pures (`segments_to_text`, `output_path_for`, `is_supported_audio_extension`, `is_valid_model_name`) dans `domain/`, avec tests unitaires — prérequis à tout le reste, permet le TDD immédiat sans dépendre de `faster-whisper`/Tkinter. | Faible | Faible |
 | 2 | Ajouter un `try/except` autour de `transcribe_task()` pour fermer proprement la fenêtre de chargement et informer l'utilisateur en cas d'erreur — bug latent déjà présent sur macOS, indépendant du portage mais à corriger tôt vu la variance d'environnements à venir. | Faible | Moyen (comportement actuel en cas d'erreur = blocage silencieux) |
-| 3 | Nettoyer `requirements.txt` : isoler `macholib`/`altgraph` (macOS-only) via un marqueur d'environnement (`; sys_platform == "darwin"`) plutôt que de les installer partout inutilement. | Faible | Faible |
+| 3 | Nettoyer `requirements.txt` : isoler `macholib` (macOS-only) via un marqueur d'environnement (`; sys_platform == "darwin"`) plutôt que de l'installer partout inutilement. | Faible | Faible |
 | 4 | Mettre en place `pytest` + une CI GitHub Actions en matrice (`macos-latest`, `windows-latest`, `ubuntu-latest`) **dès le premier jalon de portage**, avant d'écrire le moindre code spécifique Windows/Linux. | Moyen | Faible |
 | 5 | Documenter (README + éventuel script de setup) la dépendance système `python3-tk` sous Linux — sans elle, l'app ne démarre pas du tout, et rien dans `pip install` ne le signale. | Moyen | Moyen (bloquant silencieux sur Linux) |
 | 6 | Ajouter des commandes/scripts de build PyInstaller Windows et Linux, en miroir des commandes macOS existantes, en réutilisant `assets/logo.ico`/`assets/logo.png` déjà présents. | Moyen | Faible |

@@ -4,8 +4,12 @@ from faster_whisper import WhisperModel
 import os
 import threading
 
+from domain.audio_files import FILE_DIALOG_PATTERN
+from domain.whisper_models import SUPPORTED_MODELS, DEFAULT_MODEL
+from platform_.transcriber import transcribe_to_file, TranscriptionError
+
 selected_file = None
-model_choice = "base"
+model_choice = DEFAULT_MODEL
 file_label = None
 model_menu = None
 root = None
@@ -23,9 +27,9 @@ def show_done_window(output_path):
         global selected_file, model_choice
         done.destroy()
         selected_file = None
-        model_choice = "base"
+        model_choice = DEFAULT_MODEL
         file_label.config(text="Aucun fichier sélectionné.")
-        model_menu.set("base")
+        model_menu.set(DEFAULT_MODEL)
         root.deiconify()
 
     done = tk.Toplevel()
@@ -35,23 +39,27 @@ def show_done_window(output_path):
     tk.Label(done, text=f"Fichier sauvegardé :\n{output_path}", wraplength=300).pack(pady=5)
     tk.Button(done, text="OK", command=close_and_restart).pack(pady=5)
 
+def show_error_window(message):
+    root.deiconify()
+    messagebox.showerror("Erreur de transcription", message)
+
 def run_transcription():
     global selected_file, model_choice
 
     loader = show_loader_window()
 
     def transcribe_task():
-        model = WhisperModel(model_choice)
-        segments, _ = model.transcribe(selected_file)
-
-        text = "\n".join([seg.text for seg in segments])
-        txt_output = os.path.splitext(selected_file)[0] + "_transcription.txt"
-
-        with open(txt_output, "w", encoding="utf-8") as f:
-            f.write(text)
+        try:
+            output_path = transcribe_to_file(
+                selected_file, model_factory=lambda: WhisperModel(model_choice)
+            )
+        except TranscriptionError as exc:
+            loader.destroy()
+            show_error_window(str(exc))
+            return
 
         loader.destroy()
-        show_done_window(txt_output)
+        show_done_window(output_path)
 
     threading.Thread(target=transcribe_task, daemon=True).start()
 
@@ -59,9 +67,7 @@ def browse_file():
     global selected_file
     path = filedialog.askopenfilename(
         title="Choisir un fichier audio",
-        filetypes=[("Fichiers audio", "*.mp3 *.wav *.m4a *.ogg *.flac *.mp4 *.mkv " +
-            "*.amr *.dss *.dvf *.bmf *.tta *.tak *.ape *.alac *.ra *.rm *.wma *.opus *.aac " +
-            "*.pcm *.raw *.au *.aiff")]
+        filetypes=[("Fichiers audio", FILE_DIALOG_PATTERN)]
     )
     if path:
         selected_file = path
@@ -81,7 +87,7 @@ def setup_main_window(root):
 
     tk.Label(root, text="Modèle :").pack(pady=(20, 0))
     model_menu = tk.StringVar(value=model_choice)
-    tk.OptionMenu(root, model_menu, "tiny", "base", "small", "medium", "large").pack()
+    tk.OptionMenu(root, model_menu, *SUPPORTED_MODELS).pack()
 
     def on_transcribe():
         global model_choice
@@ -94,7 +100,7 @@ def setup_main_window(root):
 
     tk.Button(root, text="Transcrire", command=on_transcribe, bg="lightgreen").pack(pady=20)
 
-# 🔄 Point d’entrée principal
+# 🔄 Point d'entrée principal
 if __name__ == "__main__":
     import multiprocessing
     multiprocessing.freeze_support()  # ← important pour Windows et PyInstaller
