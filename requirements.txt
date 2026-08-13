@@ -1,6 +1,6 @@
 # Requires Python >=3.10,<3.13 (numpy==2.2.5 needs Python >=3.10).
 altgraph==0.17.4
-av==14.3.0
+av==14.2.0
 certifi==2025.1.31
 charset-normalizer==3.4.1
 coloredlogs==15.0.1

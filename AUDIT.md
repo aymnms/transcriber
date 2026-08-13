@@ -138,6 +138,12 @@ Ce choix garde une barre d'exigence **cohérente entre les trois OS** : aucun ne
 
 ---
 
+## Addendum — dépendance rompue détectée par la CI (2026-08-14)
+
+La toute première exécution de la CI multi-OS (J2) a échoué **identiquement sur Linux, Windows et macOS Apple Silicon** dès l'étape `pip install -r requirements-dev.txt`. Investigation : `av==14.3.0` (dépendance transitive de `faster-whisper`, utilisée pour le décodage audio, cf. §2.2) **n'a aucun fichier publié sur PyPI** (0 wheel, 0 sdist) — la version épinglée dans `requirements.txt` a été retirée de PyPI après que ce pin a été figé (`pip freeze`) à un moment où elle existait encore. Conséquence : **`pip install -r requirements.txt` échoue déjà aujourd'hui sur macOS aussi**, indépendamment de tout portage — ce n'est pas une régression introduite par ce travail, mais un cas de « dependency rot » préexistant que la CI vient de révéler pour la première fois, faute d'avoir jamais existé avant.
+
+Correctif appliqué : `av==14.2.0` (version antérieure la plus proche disposant de wheels prébuilts complets pour cp39–cp313 sur `win_amd64`, `macosx_arm64`/`x86_64`, et `manylinux_x86_64`/`aarch64` — vérifié via l'API PyPI). Aucun changement de comportement attendu : PyAV n'est jamais appelé directement par le code applicatif, uniquement en interne par `faster-whisper` pour le décodage.
+
 ## Questions ouvertes (aucune bloquante à ce stade)
 
 Les deux questions structurantes posées par le brief de mission (§2.3 accélération matérielle, §2.6 format de distribution) sont **tranchées ci-dessus**, directement déductibles du code et des dépendances — pas de remontée nécessaire.
