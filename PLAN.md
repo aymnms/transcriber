@@ -19,26 +19,24 @@ Contrainte transverse à tous les jalons : **aucune régression macOS** (vérifi
 ### ✅ Terminé
 - [x] J0 — Audit complet (`AUDIT.md`)
 - [x] J0 — Rédaction de ce plan
+- [x] J1.1 Créer la branche de travail dédiée (`feat/cross-platform-migration`)
+- [x] J1.2 Mettre en place `pytest` (dossier `tests/unit/`, `tests/functional/`, venv local `.venv` déjà ignoré par `.gitignore`)
+- [x] J1.3 TDD : extraire `domain/transcription.py` (`segments_to_text`, `output_path_for`)
+- [x] J1.4 TDD : extraire `domain/audio_files.py` (`is_supported_audio_extension`, `FILE_DIALOG_PATTERN`)
+- [x] J1.5 TDD : extraire `domain/whisper_models.py` (`is_valid_model_name`, `SUPPORTED_MODELS`, `DEFAULT_MODEL`)
+- [x] J1.6 Réécrire `app_whisper.py` pour consommer `domain/`/`platform_/` sans changer le comportement observable — package renommé `platform_` (et non `platform`) pour ne pas masquer le module standard `platform`, écart au libellé du brief documenté ici pour traçabilité
+- [x] J1.7 Corriger le bug latent : `try/except` dans `platform_/transcriber.py` (`TranscriptionError`), testé (écriture réelle sur disque via `tmp_path`, pas de fichier partiel en cas d'échec), fenêtre de chargement fermée + dialogue d'erreur au lieu d'un blocage silencieux
+- [x] J1.8 Nettoyer `requirements.txt` (`macholib` conditionné à `sys_platform == "darwin"` — `altgraph` est en réalité cross-platform, correction apportée à `AUDIT.md` §2.3/§2.5/§2.8-3 en cours de route), ajout de `requirements-dev.txt`, version Python documentée (`>=3.10,<3.13`)
+- [x] J1.9 Vérification : suite de tests verte localement (16/16) + smoke-test d'import de `app_whisper.py` avec les vraies dépendances installées (venv jetable) confirmant que le câblage domain/platform_/GUI ne casse rien. Pas de lancement interactif complet de la fenêtre Tkinter (pas de session graphique pilotable ici) — la confirmation comportementale complète macOS reste à la charge de l'utilisateur ou de la CI (J2)
 
 ### 🔵 En cours
-- [ ] J1.1 — Créer la branche de travail dédiée
+- [ ] J2.1 `.github/workflows/ci.yml` : matrice `macos-13` / `macos-14` / `windows-latest` / `ubuntu-latest`
 
 ### À faire
 
-**J1 — Fondations : séparation domain/platform + infra de tests** (réf. AUDIT §2.1, §2.7, §2.8-1, §2.8-2, §2.8-3)
-- [ ] J1.1 Créer la branche de travail dédiée
-- [ ] J1.2 Mettre en place `pytest` (dossier `tests/unit/`, `tests/functional/`)
-- [ ] J1.3 TDD : extraire `domain/transcription.py` (`segments_to_text`, `output_path_for`) — fonctions pures, zéro dépendance tierce
-- [ ] J1.4 TDD : extraire `domain/audio_files.py` (`is_supported_audio_extension`, liste des extensions supportées)
-- [ ] J1.5 TDD : extraire `domain/whisper_models.py` (`is_valid_model_name`, liste des modèles supportés)
-- [ ] J1.6 Réécrire `app_whisper.py` pour consommer `domain/` sans changer le comportement observable (macOS)
-- [ ] J1.7 Corriger le bug latent : `try/except` autour de `transcribe_task`, avec test fonctionnel sur `platform/` (fermeture du loader + message d'erreur au lieu d'un blocage silencieux)
-- [ ] J1.8 Nettoyer `requirements.txt` (marqueur `sys_platform` pour `macholib`, seul paquet réellement macOS-only), pinner la version de Python (`>=3.10,<3.13`)
-- [ ] J1.9 Vérification manuelle macOS (lancement de `app_whisper.py` en local) pour confirmer l'absence de régression avant la mise en place de la CI
-
 **J2 — CI multi-OS** (réf. AUDIT §2.5, §4 du brief)
-- [ ] J2.1 `.github/workflows/ci.yml` : matrice `macos-13` (Intel), `macos-14` (Apple Silicon), `windows-latest`, `ubuntu-latest`, exécutant les tests `domain/` (aucune dépendance système requise)
-- [ ] J2.2 Ajouter l'installation de `python3-tk` dans l'étape `ubuntu-latest` de la CI (réf. AUDIT §2.5 Linux) pour permettre les tests `platform/` impliquant Tkinter
+- [ ] J2.1 `.github/workflows/ci.yml` : matrice `macos-13` (Intel), `macos-14` (Apple Silicon), `windows-latest`, `ubuntu-latest`, exécutant `tests/unit` + `tests/functional` (`domain/` et `platform_/transcriber.py` n'ont besoin d'aucune dépendance système)
+- [ ] J2.2 Ajouter l'installation de `python3-tk` dans l'étape `ubuntu-latest` de la CI (réf. AUDIT §2.5 Linux) pour permettre l'import de `app_whisper.py` (Tkinter)
 - [ ] J2.3 Confirmer CI verte sur les 4 configurations avant de passer au jalon suivant
 
 **J3 — Portage Windows** (réf. AUDIT §2.5 Windows, §2.6, §2.8-6, §2.8-8)
@@ -68,3 +66,4 @@ Contrainte transverse à tous les jalons : **aucune régression macOS** (vérifi
 
 - 2026-08-14 — Audit complet réalisé (`AUDIT.md`). Aucune question bloquante identifiée : les deux points de décision du brief (accélération matérielle, format de distribution) sont tranchés directement par l'audit.
 - 2026-08-14 — Plan de migration rédigé (`PLAN.md`), démarrage du jalon J1.
+- 2026-08-14 — J1 terminé : `domain/` (transcription, audio_files, whisper_models) extrait en TDD avec 13 tests unitaires ; `platform_/transcriber.py` ajouté (3 tests fonctionnels) et corrige le blocage silencieux en cas d'échec de transcription ; `app_whisper.py` recâblé sans changement de comportement nominal ; `requirements.txt` nettoyé et complété par `requirements-dev.txt`. Suite complète verte (16/16). Démarrage de J2 (CI multi-OS).
