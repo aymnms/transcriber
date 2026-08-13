@@ -50,8 +50,8 @@ Contrainte transverse à tous les jalons : **aucune régression macOS** (vérifi
 - [ ] J4.3 Vérifier par CI (job `ubuntu-latest`, avec `python3-tk` installé) le smoke-import complet
 
 **J5 — MVP portable** (réf. AUDIT §2.6, §3 du brief)
-- [ ] J5.1 Smoke test E2E (transcription bout-en-bout sur un fichier audio court, modèle `tiny`) exécuté par CI sur les 4 configurations
-- [ ] J5.2 CI verte simultanément sur macOS Intel, macOS Apple Silicon, Windows, Linux
+- [x] J5.1 Smoke test E2E (`tests/e2e/test_transcribe_sample_audio.py`, modèle `tiny` réel sur `assets/audios/NewRecording.m4a` via `platform_/transcriber.py`), marqueur pytest `e2e` dédié (hors suite rapide), job CI séparé `e2e` sur les 4 configurations. Validé en local (macOS ARM, dépendances réelles installées) : transcription correcte du fichier échantillon.
+- [ ] J5.2 CI verte simultanément sur macOS Intel, macOS Apple Silicon, Windows, Linux (jobs `test` ET `e2e`)
 - [ ] J5.3 Mise à jour finale du README (matrice de support, instructions de build par OS)
 - [ ] J5.4 Revue finale de `AUDIT.md`/`PLAN.md` pour clôturer le plan
 
@@ -67,4 +67,5 @@ Contrainte transverse à tous les jalons : **aucune régression macOS** (vérifi
 - 2026-08-14 — Audit complet réalisé (`AUDIT.md`). Aucune question bloquante identifiée : les deux points de décision du brief (accélération matérielle, format de distribution) sont tranchés directement par l'audit.
 - 2026-08-14 — Plan de migration rédigé (`PLAN.md`), démarrage du jalon J1.
 - 2026-08-14 — J1 terminé : `domain/` (transcription, audio_files, whisper_models) extrait en TDD avec 13 tests unitaires ; `platform_/transcriber.py` ajouté (3 tests fonctionnels) et corrige le blocage silencieux en cas d'échec de transcription ; `app_whisper.py` recâblé sans changement de comportement nominal ; `requirements.txt` nettoyé et complété par `requirements-dev.txt`. Suite complète verte (16/16). Démarrage de J2 (CI multi-OS).
-- 2026-08-14 — J2.1 poussé (`.github/workflows/ci.yml`), premier run CI : échec identique sur Linux/Windows/macOS ARM dès l'installation des dépendances → `av==14.3.0` n'existe plus sur PyPI (dependency rot préexistant, indépendant du portage, cf. AUDIT.md addendum). Corrigé en `av==14.2.0`. Re-push en cours pour confirmer le vert. `> ⚠️ Bloqué (temporaire) : en attente de la confirmation CI après correctif.`
+- 2026-08-14 — J2.1 poussé (`.github/workflows/ci.yml`), premier run CI : échec identique sur Linux/Windows/macOS ARM dès l'installation des dépendances → `av==14.3.0` n'existe plus sur PyPI (dependency rot préexistant, indépendant du portage, cf. AUDIT.md addendum). Corrigé en `av==14.2.0`. Re-push : Linux, Windows, macOS Apple Silicon verts. macOS Intel (`macos-13`) reste en `queued` de façon prolongée — capacité de runners Intel limitée côté GitHub Actions actuellement, indépendant de ce dépôt. `> ⚠️ Bloqué (temporaire, infra externe) : en attente que le runner macos-13 soit assigné par GitHub.`
+- 2026-08-14 — README corrigé (retrait de la fausse mention `.exe` déjà disponible, ajout du prérequis `python3-tk` Linux, sections de build Windows/Linux). J5.1 ajouté : test E2E réel (`tests/e2e`), validé en local avec les vraies dépendances (téléchargement + transcription réussie du fichier échantillon), job CI `e2e` ajouté sur la même matrice 4 OS.

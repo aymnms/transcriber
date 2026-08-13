@@ -41,3 +41,38 @@ jobs:
 
       - name: Run test suite
         run: python -m pytest tests/unit tests/functional -v
+
+  e2e:
+    name: e2e (${{ matrix.name }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: macos-13
+            name: macOS Intel
+          - os: macos-14
+            name: macOS Apple Silicon
+          - os: windows-latest
+            name: Windows
+          - os: ubuntu-latest
+            name: Linux
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install Tk system dependency (Linux)
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y python3-tk
+
+      - name: Install dependencies
+        run: python -m pip install --upgrade pip -r requirements-dev.txt
+
+      - name: Run end-to-end transcription smoke test
+        run: python -m pytest tests/e2e -v -m e2e
