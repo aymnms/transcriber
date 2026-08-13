@@ -50,6 +50,8 @@
           <li><a href="#generate icns">Generate icns</a></li>
           <li><a href="#for-macos-arm">For Macos (ARM)</a></li>
           <li><a href="#for-macos-intel">For Macos (Intel)</a></li>
+          <li><a href="#for-windows">For Windows</a></li>
+          <li><a href="#for-linux">For Linux</a></li>
         </ul>
       </ul>
     </li>
@@ -74,7 +76,9 @@ A simple, lightweight application for transcribing audio files into text with Wh
 
 ### Download
 
-[Download the latest version (.app / .exe)](https://github.com/aymnms/transcriber/releases)
+[Download the latest version](https://github.com/aymnms/transcriber/releases)
+
+> Windows and Linux support is in active development (see [PLAN.md](./PLAN.md)). Only macOS builds are published today.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -125,7 +129,7 @@ This window indicate the transcription is done! You can find a txt file content 
 - Simple graphical interface with Tkinter
 - Support for a wide range of audio formats
 - Transcription with Whisper templates (from tiny to large)
-- Runs on macOS and Windows
+- Runs on macOS today; Windows and Linux support is in progress (see [PLAN.md](./PLAN.md))
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -143,7 +147,20 @@ This window indicate the transcription is done! You can find a txt file content 
 
 ### Prerequisites
 
-Need to install Python and Tkinter.
+Need to install Python (>=3.10,<3.13) and Tkinter.
+
+On Linux, Tkinter is **not** installable via `pip` — it's a system package:
+
+```bash
+# Debian/Ubuntu
+sudo apt-get install python3-tk
+
+# Fedora
+sudo dnf install python3-tkinter
+
+# Arch
+sudo pacman -S tk
+```
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -237,6 +254,26 @@ pip install -r requirements.txt
 ```bash
 arch -x86_64 pyinstaller --windowed --onedir app_whisper.py --name "Transcriber (Intel)" --icon assets/MyIcon.icns
 ```
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+#### For Windows
+
+> Generate into a dist folder
+```bash
+pyinstaller --windowed --onedir app_whisper.py --name "Transcriber" --icon assets/logo.ico
+```
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+#### For Linux
+
+> Requires the `python3-tk` system package (see [Prerequisites](#prerequisites)).
+>
+> Generate into a dist folder
+```bash
+pyinstaller --windowed --onedir app_whisper.py --name "transcriber" --icon assets/logo.png
+```
+
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 <!-- LICENSE -->
