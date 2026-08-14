@@ -35,9 +35,10 @@ Contrainte transverse à tous les jalons : **aucune régression macOS** (vérifi
 ### À faire
 
 **J2 — CI multi-OS** (réf. AUDIT §2.5, §4 du brief)
-- [ ] J2.1 `.github/workflows/ci.yml` : matrice `macos-13` (Intel), `macos-14` (Apple Silicon), `windows-latest`, `ubuntu-latest`, exécutant `tests/unit` + `tests/functional` (`domain/` et `platform_/transcriber.py` n'ont besoin d'aucune dépendance système)
-- [ ] J2.2 Ajouter l'installation de `python3-tk` dans l'étape `ubuntu-latest` de la CI (réf. AUDIT §2.5 Linux) pour permettre l'import de `app_whisper.py` (Tkinter)
-- [ ] J2.3 Confirmer CI verte sur les 4 configurations avant de passer au jalon suivant
+- [x] J2.1 `.github/workflows/ci.yml` : matrice `macos-13` (Intel), `macos-14` (Apple Silicon), `windows-latest`, `ubuntu-latest`, exécutant `tests/unit` + `tests/functional`
+- [x] J2.2 Installation de `python3-tk` dans l'étape `ubuntu-latest` de la CI (réf. AUDIT §2.5 Linux)
+- [ ] J2.3 Confirmer CI verte sur les 4 configurations
+  > ⚠️ Bloqué (infra externe, hors contrôle du dépôt) : `test`/`e2e` verts sur Linux, Windows, macOS Apple Silicon. Les jobs `macos-13` (Intel) restent `queued` sans jamais se voir assigner de runner, sur 4 runs consécutifs sur plus d'une heure — dépôt public (donc pas une limite de dépenses Actions), problème confirmé côté capacité runners Intel de GitHub Actions. Décision utilisateur (2026-08-14) : continuer à attendre plutôt que d'abandonner `macos-13` de la matrice.
 
 **J3 — Portage Windows** (réf. AUDIT §2.5 Windows, §2.6, §2.8-6, §2.8-8)
 - [ ] J3.1 Ajouter la commande de build PyInstaller Windows au README (réutilise `assets/logo.ico` déjà présent)
@@ -52,6 +53,7 @@ Contrainte transverse à tous les jalons : **aucune régression macOS** (vérifi
 **J5 — MVP portable** (réf. AUDIT §2.6, §3 du brief)
 - [x] J5.1 Smoke test E2E (`tests/e2e/test_transcribe_sample_audio.py`, modèle `tiny` réel sur `assets/audios/NewRecording.m4a` via `platform_/transcriber.py`), marqueur pytest `e2e` dédié (hors suite rapide), job CI séparé `e2e` sur les 4 configurations. Validé en local (macOS ARM, dépendances réelles installées) : transcription correcte du fichier échantillon.
 - [ ] J5.2 CI verte simultanément sur macOS Intel, macOS Apple Silicon, Windows, Linux (jobs `test` ET `e2e`)
+  > ⚠️ Bloqué sur le même point que J2.3 : `test` et `e2e` verts sur 3/4 OS (Linux, Windows, macOS Apple Silicon) ; `macos-13` toujours en attente de runner côté GitHub. Rien à corriger côté code — en attente.
 - [ ] J5.3 Mise à jour finale du README (matrice de support, instructions de build par OS)
 - [ ] J5.4 Revue finale de `AUDIT.md`/`PLAN.md` pour clôturer le plan
 
@@ -69,3 +71,4 @@ Contrainte transverse à tous les jalons : **aucune régression macOS** (vérifi
 - 2026-08-14 — J1 terminé : `domain/` (transcription, audio_files, whisper_models) extrait en TDD avec 13 tests unitaires ; `platform_/transcriber.py` ajouté (3 tests fonctionnels) et corrige le blocage silencieux en cas d'échec de transcription ; `app_whisper.py` recâblé sans changement de comportement nominal ; `requirements.txt` nettoyé et complété par `requirements-dev.txt`. Suite complète verte (16/16). Démarrage de J2 (CI multi-OS).
 - 2026-08-14 — J2.1 poussé (`.github/workflows/ci.yml`), premier run CI : échec identique sur Linux/Windows/macOS ARM dès l'installation des dépendances → `av==14.3.0` n'existe plus sur PyPI (dependency rot préexistant, indépendant du portage, cf. AUDIT.md addendum). Corrigé en `av==14.2.0`. Re-push : Linux, Windows, macOS Apple Silicon verts. macOS Intel (`macos-13`) reste en `queued` de façon prolongée — capacité de runners Intel limitée côté GitHub Actions actuellement, indépendant de ce dépôt. `> ⚠️ Bloqué (temporaire, infra externe) : en attente que le runner macos-13 soit assigné par GitHub.`
 - 2026-08-14 — README corrigé (retrait de la fausse mention `.exe` déjà disponible, ajout du prérequis `python3-tk` Linux, sections de build Windows/Linux). J5.1 ajouté : test E2E réel (`tests/e2e`), validé en local avec les vraies dépendances (téléchargement + transcription réussie du fichier échantillon), job CI `e2e` ajouté sur la même matrice 4 OS.
+- 2026-08-14 — Ajout d'un groupe `concurrency` à la CI pour annuler les runs redondants. État confirmé sur le run le plus à jour : `test` et `e2e` verts sur Linux, Windows, macOS Apple Silicon (6/8 jobs). Les 2 jobs `macos-13` restent `queued` sans assignation de runner malgré plusieurs runs et plus d'une heure d'attente — dépôt public donc pas un problème de quota/facturation, confirmé comme un problème de capacité runner Intel côté GitHub Actions, hors de mon contrôle. Question posée à l'utilisateur sur la marche à suivre → réponse : continuer à attendre.
