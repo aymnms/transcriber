@@ -4,204 +4,177 @@
 [![Forks][forks-shield]][forks-url]
 [![Stargazers][stars-shield]][stars-url]
 [![Issues][issues-shield]][issues-url]
-[![MIT][license-shield]][license-url]
+[![MIT License][license-shield]][license-url]
+[![CI][ci-shield]][ci-url]
 
-
-
-<!-- PROJECT LOGO -->
 <br />
 <div align="center">
   <a href="https://github.com/aymnms/transcriber">
     <img src="assets/logo.png" alt="Logo" width="80" height="80">
   </a>
 
-<h3 align="center">transcriber</h3>
+  <h3 align="center">transcriber</h3>
 
   <p align="center">
-    A simple, lightweight application for transcribing audio files into text with Whisper (OpenAI).
+    A simple, lightweight desktop app that transcribes audio files to text using OpenAI's Whisper — offline, on your own machine.
+    <br />
+    <a href="https://github.com/aymnms/transcriber/releases"><strong>Download the latest release »</strong></a>
     <br />
     <br />
-    <a href="https://github.com/aymnms/transcriber/issues/new?labels=bug&template=bug-report---.md">Report Bug</a>
+    <a href="https://github.com/aymnms/transcriber/issues?q=is%3Aissue+is%3Aopen+label%3Abug">Report Bug</a>
     &middot;
-    <a href="https://github.com/aymnms/transcriber/issues/new?labels=enhancement&template=feature-request---.md">Request Feature</a>
+    <a href="https://github.com/aymnms/transcriber/issues?q=is%3Aissue+is%3Aopen+label%3Aenhancement">Request Feature</a>
   </p>
 </div>
 
-
-
-<!-- TABLE OF CONTENTS -->
 <details>
   <summary>Table of Contents</summary>
   <ol>
-    <li><a href="#about-the-project">About The Project</a></li>
-    <ul>
-      <li><a href="#download">Download</a></li>
-      <li><a href="#usage">Usage</a></li>
-      <li><a href="#features">Features</a></li>
-    </ul>
-    <li>
-      <a href="#getting-started">Getting Started</a>
+    <li><a href="#about-the-project">About The Project</a>
       <ul>
         <li><a href="#built-with">Built With</a></li>
+      </ul>
+    </li>
+    <li><a href="#platform-support">Platform Support</a></li>
+    <li><a href="#getting-started">Getting Started</a>
+      <ul>
         <li><a href="#prerequisites">Prerequisites</a></li>
         <li><a href="#installation">Installation</a></li>
-        <li><a href="#generate-app">Generate app</a></li>
-        <ul>
-          <li><a href="#generate icns">Generate icns</a></li>
-          <li><a href="#for-macos-arm">For Macos (ARM)</a></li>
-          <li><a href="#for-macos-intel">For Macos (Intel)</a></li>
-          <li><a href="#for-windows">For Windows</a></li>
-          <li><a href="#for-linux">For Linux</a></li>
-        </ul>
+      </ul>
+    </li>
+    <li><a href="#usage">Usage</a></li>
+    <li><a href="#building-from-source">Building From Source</a>
+      <ul>
+        <li><a href="#macos-apple-silicon">macOS (Apple Silicon)</a></li>
+        <li><a href="#macos-intel">macOS (Intel)</a></li>
+        <li><a href="#windows">Windows</a></li>
+        <li><a href="#linux">Linux</a></li>
       </ul>
     </li>
     <li><a href="#releases">Releases</a></li>
+    <li><a href="#roadmap">Roadmap</a></li>
+    <li><a href="#contributing">Contributing</a></li>
     <li><a href="#license">License</a></li>
+    <li><a href="#acknowledgments">Acknowledgments</a></li>
   </ol>
 </details>
-
-
 
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-A simple, lightweight application for transcribing audio files into text with Whisper (OpenAI).
+<div align="center">
+  <img src="assets/screenshots/1.png" alt="Main window" width="400">
+</div>
+
+**transcriber** is a small Tkinter desktop app for turning audio files into text with [Whisper](https://github.com/openai/whisper), running entirely locally via [faster-whisper](https://github.com/SYSTRAN/faster-whisper) — no audio ever leaves your machine, and no API key or internet connection is required after the model has been downloaded once.
+
+- Pick an audio file (mp3, wav, m4a, and 20+ other formats) through a native file picker
+- Choose a Whisper model size (`tiny` → `large`) to trade off speed for accuracy
+- Get a plain `.txt` transcription saved next to your audio file
 
 <div align="center">
-  <a href="https://github.com/aymnms/transcriber">
-    <img src="assets/gif/screen-recording.gif" alt="Gif how could we use the program">
-  </a>
+  <img src="assets/gif/screen-recording.gif" alt="Demo of transcriber in action">
 </div>
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-### Download
+### Built With
 
-[Download the latest version](https://github.com/aymnms/transcriber/releases)
+[![Python][Python-badge]][Python-url]
+[![Whisper][Whisper-badge]][Whisper-url]
+[![Tkinter][Tkinter-badge]][Tkinter-url]
+[![PyInstaller][PyInstaller-badge]][PyInstaller-url]
 
-> Windows and Linux support is in active development (see [PLAN.md](./PLAN.md)). Only macOS builds are published today.
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-### Platform support
+<!-- PLATFORM SUPPORT -->
+## Platform Support
 
 | OS | Runs | Verified by CI |
 |---|---|---|
 | macOS (Apple Silicon) | ✅ | ✅ |
-| macOS (Intel) | ✅ | ✅ (via Rosetta 2 on a `macos-latest` runner — no `macos-13` runner was ever obtainable, see the addendums in [AUDIT.md](./AUDIT.md)) |
+| macOS (Intel) | ✅ | ✅ — via Rosetta 2 on a `macos-latest` runner (no `macos-13` runner was ever obtainable from GitHub; see [`AUDIT.md`](./AUDIT.md) for the full story) |
 | Windows | ✅ | ✅ |
-| Linux | ✅ (requires the `python3-tk` system package, see [Prerequisites](#prerequisites)) | ✅ |
+| Linux | ✅ — requires the `python3-tk` system package, see [Prerequisites](#prerequisites) | ✅ |
 
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-<!-- USAGE EXAMPLES -->
-
-### Usage
-
-**Main window**
-
-![main window](assets/screenshots/1.png)
-
-**Select audio**
-
-Clic on "choisir un fichier audio" and select your audio that you want transcribe.
-
-![select audio](assets/screenshots/2.png)
-
-**Select model**
-
-Clic on "Modèle" and select the whisper model that you want to use to transcribe your audio. A 'model' is like a 'version' of an ai. More you use a big version, better the result will be. But it will takes more times. Of course, the duration of the audio has also an impact on the duration of the transcription.
-
-![select model](assets/screenshots/3.png)
-
-**Wait the moment**
-
-PS: close this window don't stop the transcription.
-
-![window wait](assets/screenshots/4.png)
-
-**Done!**
-
-This window indicate the transcription is done! You can find a txt file content the transcription at the indicate location.
-
-![window done](assets/screenshots/5.png)
-
-**Transcription content**
-
-![transcription content](assets/screenshots/6.png)
-
-**Audio test**
-
-![audio](assets/audios/NewRecording.m4a)
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-### Features
-
-- Simple graphical interface with Tkinter
-- Support for a wide range of audio formats
-- Transcription with Whisper templates (from tiny to large)
-- Runs on macOS today; Windows and Linux support is in progress (see [PLAN.md](./PLAN.md))
+Every push is verified end-to-end (including a real transcription) on all four targets — see [`.github/workflows/ci.yml`](./.github/workflows/ci.yml).
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 <!-- GETTING STARTED -->
 ## Getting Started
 
-### Built With
-
-* [faster-whisper](https://github.com/SYSTRAN/faster-whisper)
-* [![Python][Python]][Python-url]  (prerequisites)
-* [pyinstaller](https://pyinstaller.org/en/stable/)
-* [Tkinter](https://docs.python.org/3/library/tkinter.html) (prerequisites)
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
+The fastest way to use transcriber is to grab a pre-built binary for your platform from the [releases page](https://github.com/aymnms/transcriber/releases). The steps below are for running it from source instead.
 
 ### Prerequisites
 
-Need to install Python (>=3.10,<3.13) and Tkinter.
+* Python `>=3.10,<3.13`
+* Tkinter — bundled with Python on macOS and Windows; on Linux it's a separate **system** package, not installable via `pip`:
 
-On Linux, Tkinter is **not** installable via `pip` — it's a system package:
+  ```bash
+  # Debian/Ubuntu
+  sudo apt-get install python3-tk
 
-```bash
-# Debian/Ubuntu
-sudo apt-get install python3-tk
+  # Fedora
+  sudo dnf install python3-tkinter
 
-# Fedora
-sudo dnf install python3-tkinter
-
-# Arch
-sudo pacman -S tk
-```
+  # Arch
+  sudo pacman -S tk
+  ```
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 ### Installation
 
-1. Clone the project
-
-```bash
-git clone git@github.com:aymnms/transcriber.git
-```
-
-2. Install pip dependences
-
-```bash
-cd transcriber
-source .venv/bin/activate
-pip install -r requirements.txt
-```
-
-3. Run the program
-
-```bash
-python3 app_whisper.py
-```
+1. Clone the repo
+   ```bash
+   git clone git@github.com:aymnms/transcriber.git
+   cd transcriber
+   ```
+2. Create a virtual environment and install dependencies
+   ```bash
+   python3 -m venv .venv
+   source .venv/bin/activate
+   pip install -r requirements.txt
+   ```
+3. Run the app
+   ```bash
+   python3 app_whisper.py
+   ```
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
+<!-- USAGE EXAMPLES -->
+## Usage
 
-### Generate app
+1. **Pick a file** — click "Choisir un fichier audio" and select the audio file you want transcribed.
 
-#### Generate icns
+   ![Select audio](assets/screenshots/2.png)
+
+2. **Pick a model** — larger Whisper models are more accurate but slower; the trade-off also depends on how long your audio is.
+
+   ![Select model](assets/screenshots/3.png)
+
+3. **Wait for it** — closing this window does not interrupt the transcription.
+
+   ![Transcription in progress](assets/screenshots/4.png)
+
+4. **Done** — the `.txt` transcription is saved next to your original audio file.
+
+   ![Transcription done](assets/screenshots/5.png)
+   ![Transcription content](assets/screenshots/6.png)
+
+A short sample audio file is included at [`assets/audios/NewRecording.m4a`](assets/audios/NewRecording.m4a) if you want to try it out immediately.
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+<!-- BUILDING FROM SOURCE -->
+## Building From Source
+
+Every build below uses [PyInstaller](https://pyinstaller.org/) with `--onedir`, producing a self-contained app folder under `dist/`.
+
+<details>
+<summary>Regenerating the macOS <code>.icns</code> icon (only needed if <code>assets/logo.png</code> changes)</summary>
 
 ```bash
 mkdir MyIcon.iconset
@@ -217,93 +190,113 @@ sips -z 512 512   assets/logo.png --out MyIcon.iconset/icon_512x512.png
 cp assets/logo.png                MyIcon.iconset/icon_512x512@2x.png
 iconutil -c icns MyIcon.iconset
 ```
+</details>
 
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
+### macOS (Apple Silicon)
 
-#### For Macos (ARM)
-
-> Only on Mac ARM
-> 
-> Generate into a dist folder
 ```bash
 pyinstaller --windowed --onedir app_whisper.py --name "Transcriber (ARM)" --icon assets/MyIcon.icns
 ```
 
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
+### macOS (Intel)
 
-#### For Macos (Intel)
+The Intel build is cross-built from Apple Silicon via Rosetta 2 — the resulting `.app` runs on both Intel and Apple Silicon Macs.
 
-> This version can be readable on macos intel AND macos arm.
-> 
-> Generate into a dist folder
-```bash
-arch -x86_64 pyinstaller --windowed --onedir app_whisper.py --name "Transcriber  (Intel)" --icon assets/MyIcon.icns
-```
+<details>
+<summary>Steps</summary>
 
-⚠️ On Mac ARM, if you want to generate an app for Mac Intel, you need to reinstall the project with Rosetta to virtualise an Intel architecture.
+1. Reopen your terminal with Rosetta enabled (Finder → Applications → Utilities → right-click Terminal → Get Info → check "Open using Rosetta"), or prefix every command below with `arch -x86_64`.
 
-1. Quit your terminal and reopen it with Rosetta
+   ![Open terminal with Rosetta](assets/screenshots/7.png)
 
-![Open terminal with Rosetta](assets/screenshots/7.png)
+2. Create a dedicated x86_64 virtual environment:
+   ```bash
+   python3 -m venv .venv-intel
+   source .venv-intel/bin/activate
+   pip install -r requirements.txt
+   ```
+3. Build:
+   ```bash
+   arch -x86_64 pyinstaller --windowed --onedir app_whisper.py --name "Transcriber (Intel)" --icon assets/MyIcon.icns
+   ```
+</details>
 
-2. Recreate a venv only for intel version
-```bash
-python3 -m venv .venv-intel
-```
+### Windows
 
-3. Use this venv
-```bash
-source .venv-intel/bin/activate
-```
-4. Install pip dependence (with arch environment, for intel)
-```bash
-pip install -r requirements.txt
-```
-
-5. Generate a .app for Intel (from Mac ARM to Mac Intel also compatible with Mac ARM)
-```bash
-arch -x86_64 pyinstaller --windowed --onedir app_whisper.py --name "Transcriber (Intel)" --icon assets/MyIcon.icns
-```
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-#### For Windows
-
-> Generate into a dist folder
 ```bash
 pyinstaller --windowed --onedir app_whisper.py --name "Transcriber" --icon assets/logo.ico
 ```
 
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
+### Linux
 
-#### For Linux
+Requires the `python3-tk` system package (see [Prerequisites](#prerequisites)).
 
-> Requires the `python3-tk` system package (see [Prerequisites](#prerequisites)).
->
-> Generate into a dist folder
 ```bash
 pyinstaller --windowed --onedir app_whisper.py --name "transcriber" --icon assets/logo.png
 ```
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-### Releases
+<!-- RELEASES -->
+## Releases
 
-Releases are automated with [python-semantic-release](https://python-semantic-release.readthedocs.io/): every push to `main` computes the next version from commit messages and publishes a GitHub Release with binaries for all 4 supported platforms attached.
+Releases are fully automated with [python-semantic-release](https://python-semantic-release.readthedocs.io/): every push to `main` computes the next version from commit messages, publishes a GitHub Release with an auto-generated [`CHANGELOG.md`](./CHANGELOG.md), and attaches pre-built binaries for all 4 supported platforms.
 
-Commit messages must follow [Conventional Commits](https://www.conventionalcommits.org/) (`feat:`, `fix:`, `docs:`, `chore:`, ...) — `feat:` triggers a minor version bump, `fix:`/`perf:` a patch bump, and a `BREAKING CHANGE:` footer (or `!` after the type) a major bump. Other types (`docs:`, `chore:`, `ci:`, `test:`, ...) don't trigger a release on their own.
+Commit messages must follow [Conventional Commits](https://www.conventionalcommits.org/):
+
+| Prefix | Effect |
+|---|---|
+| `feat:` | Minor version bump |
+| `fix:`, `perf:` | Patch version bump |
+| `feat!:` / `fix!:` / `BREAKING CHANGE:` footer | Major version bump |
+| `docs:`, `chore:`, `ci:`, `test:`, `style:`, `refactor:`, `build:` | No release triggered |
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+<!-- ROADMAP -->
+## Roadmap
+
+- [ ] AppImage packaging for Linux
+- [ ] Windows installer (Inno Setup / MSI)
+- [ ] macOS codesigning & notarization
+
+See the [open issues](https://github.com/aymnms/transcriber/issues) for a full list of proposed features and known issues, and [`PLAN.md`](./PLAN.md) / [`AUDIT.md`](./AUDIT.md) for the detailed engineering history of the macOS → Windows/Linux migration.
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+<!-- CONTRIBUTING -->
+## Contributing
+
+Contributions make the open source community amazing — any contribution you make is **greatly appreciated**.
+
+1. Fork the project
+2. Create your feature branch (`git checkout -b feat/amazing-feature`)
+3. Commit your changes following [Conventional Commits](https://www.conventionalcommits.org/) (`git commit -m 'feat: add amazing feature'`) — this is what drives automated versioning, see [Releases](#releases)
+4. Make sure the test suite passes (`pytest tests/unit tests/functional`)
+5. Push to your branch (`git push origin feat/amazing-feature`)
+6. Open a Pull Request
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 <!-- LICENSE -->
 ## License
 
-Distributed under the MIT. See `LICENSE` for more information.
+Distributed under the MIT License. See [`LICENSE`](./LICENSE) for more information.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
+<!-- ACKNOWLEDGMENTS -->
+## Acknowledgments
+
+* [OpenAI Whisper](https://github.com/openai/whisper)
+* [faster-whisper](https://github.com/SYSTRAN/faster-whisper)
+* [PyInstaller](https://pyinstaller.org/)
+* [python-semantic-release](https://python-semantic-release.readthedocs.io/)
+* [Best-README-Template](https://github.com/othneildrew/Best-README-Template) — this README's structure is based on it
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 <!-- MARKDOWN LINKS & IMAGES -->
-<!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
 [contributors-shield]: https://img.shields.io/github/contributors/aymnms/transcriber.svg?style=for-the-badge
 [contributors-url]: https://github.com/aymnms/transcriber/graphs/contributors
 [forks-shield]: https://img.shields.io/github/forks/aymnms/transcriber.svg?style=for-the-badge
@@ -313,6 +306,14 @@ Distributed under the MIT. See `LICENSE` for more information.
 [issues-shield]: https://img.shields.io/github/issues/aymnms/transcriber.svg?style=for-the-badge
 [issues-url]: https://github.com/aymnms/transcriber/issues
 [license-shield]: https://img.shields.io/github/license/aymnms/transcriber.svg?style=for-the-badge
-[license-url]: https://github.com/aymnms/transcriber/blob/master/LICENSE
-[Python]: https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white
+[license-url]: https://github.com/aymnms/transcriber/blob/main/LICENSE
+[ci-shield]: https://img.shields.io/github/actions/workflow/status/aymnms/transcriber/ci.yml?branch=main&style=for-the-badge&label=CI
+[ci-url]: https://github.com/aymnms/transcriber/actions/workflows/ci.yml
+[Python-badge]: https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white
 [Python-url]: https://www.python.org/
+[Whisper-badge]: https://img.shields.io/badge/Whisper-412991?style=for-the-badge&logo=openai&logoColor=white
+[Whisper-url]: https://github.com/openai/whisper
+[Tkinter-badge]: https://img.shields.io/badge/Tkinter-FFD43B?style=for-the-badge&logo=python&logoColor=blue
+[Tkinter-url]: https://docs.python.org/3/library/tkinter.html
+[PyInstaller-badge]: https://img.shields.io/badge/PyInstaller-000000?style=for-the-badge
+[PyInstaller-url]: https://pyinstaller.org/
