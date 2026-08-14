@@ -76,3 +76,47 @@ jobs:
 
       - name: Run end-to-end transcription smoke test
         run: python -m pytest tests/e2e -v -m e2e
+
+  rosetta-diagnostic:
+    name: rosetta-diagnostic
+    runs-on: macos-latest
+    steps:
+      - name: Host architecture
+        run: |
+          uname -m
+          sw_vers
+
+      - name: Install/confirm Rosetta 2
+        run: softwareupdate --install-rosetta --agree-to-license || true
+
+      - name: Inspect setup-python's python3 (before setup-python runs)
+        run: |
+          which python3 || true
+          lipo -archs "$(which python3)" || true
+          file "$(which python3)" || true
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Inspect setup-python's python3 (after setup-python)
+        run: |
+          which python3
+          lipo -archs "$(which python3)" || true
+          file "$(which python3)" || true
+
+      - name: Try running that python3 under Rosetta
+        run: |
+          arch -x86_64 python3 -c "import platform; print('machine:', platform.machine())" || echo "FAILED: arch -x86_64 on setup-python's python3"
+
+      - name: Try system CLT python3 under Rosetta
+        run: |
+          lipo -archs /usr/bin/python3 || true
+          arch -x86_64 /usr/bin/python3 -c "import platform; print('machine:', platform.machine())" || echo "FAILED: arch -x86_64 on /usr/bin/python3"
+
+      - name: Download and inspect python.org universal2 installer
+        run: |
+          curl -fsSL -o /tmp/python-universal2.pkg "https://www.python.org/ftp/python/3.11.9/python-3.11.9-macos11.pkg"
+          pkgutil --payload-files /tmp/python-universal2.pkg | head -5 || true
+          echo "download OK, size:"
+          ls -la /tmp/python-universal2.pkg
