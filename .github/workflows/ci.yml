@@ -18,10 +18,8 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - os: macos-13
-            name: macOS Intel
-          - os: macos-14
-            name: macOS Apple Silicon
+          - os: macos-latest
+            name: macOS (Apple Silicon)
           - os: windows-latest
             name: Windows
           - os: ubuntu-latest
@@ -53,10 +51,8 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - os: macos-13
-            name: macOS Intel
-          - os: macos-14
-            name: macOS Apple Silicon
+          - os: macos-latest
+            name: macOS (Apple Silicon)
           - os: windows-latest
             name: Windows
           - os: ubuntu-latest

@@ -144,6 +144,22 @@ La toute première exécution de la CI multi-OS (J2) a échoué **identiquement 
 
 Correctif appliqué : `av==14.2.0` (version antérieure la plus proche disposant de wheels prébuilts complets pour cp39–cp313 sur `win_amd64`, `macosx_arm64`/`x86_64`, et `manylinux_x86_64`/`aarch64` — vérifié via l'API PyPI). Aucun changement de comportement attendu : PyAV n'est jamais appelé directement par le code applicatif, uniquement en interne par `faster-whisper` pour le décodage.
 
+## Addendum — CI macOS Intel non obtenable (2026-08-14)
+
+Le jalon J2 (CI multi-OS) a été mis en place avec une matrice couvrant `macos-13` (Intel), `macos-14` (Apple Silicon), `windows-latest`, `ubuntu-latest`. Sur 4 exécutions consécutives, sur plus d'1h30 d'attente cumulée, **les jobs `macos-13` ne se sont jamais vu attribuer de runner** (statut `queued` en continu), alors que les 3 autres configurations (y compris le job `e2e` de bout en bout avec un vrai modèle Whisper) se terminent en quelques minutes avec succès.
+
+Vérifications faites avant de conclure :
+- Le dépôt est **public** → minutes GitHub Actions illimitées, ce n'est donc pas une limite de dépenses/quota.
+- La page de statut officielle (`githubstatus.com`) ne signale **aucun incident en cours** lié aux runners macOS.
+- Le changelog Actions de GitHub ne mentionne **aucune dépréciation annoncée** de `macos-13` à cette date.
+
+Cause exacte non confirmée (accès insuffisant pour le diagnostiquer précisément — capacité runner probablement restreinte côté GitHub, ou réglage compte/organisation invisible depuis l'API publique). Remonté à l'utilisateur, qui a tranché : **retirer `macos-13` de la matrice CI et se reposer sur `macos-latest`** (Apple Silicon aujourd'hui) comme seul signal CI macOS, plutôt que de bloquer indéfiniment le portage sur ce point.
+
+Conséquence assumée : la CI ne fournit **plus de preuve automatisée pour macOS Intel spécifiquement**. Le risque réel est jugé faible :
+- Aucune trace de code spécifique à l'architecture (Intel vs ARM) dans `app_whisper.py`, `domain/`, ou `platform_/` — le comportement vérifié sur Apple Silicon n'a aucune raison de diverger sur Intel.
+- Les instructions de build Intel existantes (cross-build via Rosetta, cf. README « For Macos (Intel) ») restent documentées et inchangées.
+- Si un accès à une machine Intel réelle (ou un runner `macos-13` fonctionnel) redevient disponible plus tard, une vérification manuelle ponctuelle reste possible sans changement de code.
+
 ## Questions ouvertes (aucune bloquante à ce stade)
 
 Les deux questions structurantes posées par le brief de mission (§2.3 accélération matérielle, §2.6 format de distribution) sont **tranchées ci-dessus**, directement déductibles du code et des dépendances — pas de remontée nécessaire.
