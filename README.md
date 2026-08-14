@@ -37,7 +37,7 @@
     <ul>
       <li><a href="#download">Download</a></li>
       <li><a href="#usage">Usage</a></li>
-      <li><a href="#feature">Feature</a></li>
+      <li><a href="#features">Features</a></li>
     </ul>
     <li>
       <a href="#getting-started">Getting Started</a>
