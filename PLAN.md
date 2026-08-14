@@ -54,7 +54,16 @@ Contrainte transverse à tous les jalons : **aucune régression macOS** (vérifi
 ### 🔵 En cours
 *(rien — MVP portable atteint sur le périmètre CI disponible, voir note ci-dessous)*
 
+### 🔵 En cours
+- [ ] J6 — Release automatisée (`python-semantic-release`), hors périmètre du brief initial, demandée par l'utilisateur le 2026-08-14
+
 ### À faire
+
+**J6 — Release automatisée** (hors brief initial, ajouté sur demande utilisateur)
+- [x] J6.1 `pyproject.toml` : métadonnées projet + config `[tool.semantic_release]` (commits conventionnels déjà utilisés depuis le début de ce travail, `allow_zero_version = true` pour rester en 0.x, `tag_format = "v{version}"` cohérent avec le tag `v0.1.0` existant)
+- [x] J6.2 Validé en local (`--noop`) : calcul correct de la prochaine version (`0.2.0`, cohérent avec les commits `feat:` accumulés depuis `v0.1.0`) et génération du changelog
+- [x] J6.3 `.github/workflows/release.yml` : déclenché après succès de la CI sur `main` (`workflow_run`), job `release` (bump version + changelog + tag + Release GitHub via l'action officielle `python-semantic-release/python-semantic-release`), puis jobs `build-macos` (ARM + Intel via Rosetta), `build-windows`, `build-linux` qui buildent et attachent les binaires PyInstaller à la Release via `gh release upload`
+- [ ] J6.4 Validation réelle : la partie « version/changelog/tag/release » ne peut être testée en conditions réelles que sur `main` (elle crée un vrai tag + une vraie Release publique) — **non déclenchée sans confirmation explicite**, conformément aux règles de sécurité sur la publication de contenu public
 
 **Backlog (hors périmètre MVP, réf. AUDIT §2.8-7)**
 - [ ] Empaquetage AppImage pour Linux
@@ -84,3 +93,4 @@ Aucune régression macOS introduite : le comportement observable de `app_whisper
 - 2026-08-14 — Après 30 minutes supplémentaires de vérification (1h30 cumulée), toujours aucun mouvement sur `macos-13`. Nouvelle question posée à l'utilisateur → décision : retirer `macos-13` de la matrice CI, garder `macos-latest` (Apple Silicon) comme seul signal macOS. J2 et J5.2 marqués terminés sur cette base. Écart documenté dans AUDIT.md et en introduction de ce plan.
 - 2026-08-14 — Push du retrait de `macos-13` : run [31784867450](https://github.com/aymnms/transcriber/actions/runs/31784867450) vert de bout en bout en ~90s (6/6 jobs : `test`+`e2e` sur Linux, Windows, macOS Apple Silicon). README complété (matrice de support par OS). Tous les jalons J1 à J5 sont marqués terminés — MVP portable atteint sur le périmètre CI disponible, réserve macOS Intel documentée et actée avec l'utilisateur.
 - 2026-08-14 — Utilisateur : possible de builder Intel sans matériel physique, via Rosetta sur Apple Silicon ? Exploré sur `experiment/intel-build-via-rosetta` (branchée depuis `feat/cross-platform-migration`) : job diagnostic `rosetta-diagnostic` confirmé — Python `setup-python` universal2, Rosetta fonctionnelle sur `macos-latest`. Remplacé par deux jobs réels `test`/`e2e (macOS Intel via Rosetta)` construisant un virtualenv x86_64 sous Rosetta. Run [31787156790](https://github.com/aymnms/transcriber/actions/runs/31787156790) : 8/8 jobs verts, y compris la suite complète et la transcription E2E réelle en x86_64 authentique. Mergé dans `feat/cross-platform-migration` comme convenu. La couverture macOS Intel est désormais complète — plus aucune réserve sur le MVP portable.
+- 2026-08-14 — Demande utilisateur (hors brief initial) : mettre en place une release automatisée. Choix validés avec l'utilisateur : `python-semantic-release` (plutôt que le `semantic-release` JS), pipeline complet avec build + attachement des binaires des 4 cibles. Branche `feat/semantic-release` (depuis `feat/cross-platform-migration`) : `pyproject.toml` configuré et validé en `--noop` local (prochaine version calculée : `0.2.0`), `.github/workflows/release.yml` écrit (déclenché après CI verte sur `main` uniquement). La partie « bump + tag + Release GitHub » n'a volontairement pas encore été déclenchée pour de vrai — ça créerait une vraie Release publique, ce qui nécessite une confirmation explicite avant de merger sur `main`.

@@ -55,6 +55,7 @@
         </ul>
       </ul>
     </li>
+    <li><a href="#releases">Releases</a></li>
     <li><a href="#license">License</a></li>
   </ol>
 </details>
@@ -282,6 +283,14 @@ pyinstaller --windowed --onedir app_whisper.py --name "Transcriber" --icon asset
 ```bash
 pyinstaller --windowed --onedir app_whisper.py --name "transcriber" --icon assets/logo.png
 ```
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+### Releases
+
+Releases are automated with [python-semantic-release](https://python-semantic-release.readthedocs.io/): every push to `main` computes the next version from commit messages and publishes a GitHub Release with binaries for all 4 supported platforms attached.
+
+Commit messages must follow [Conventional Commits](https://www.conventionalcommits.org/) (`feat:`, `fix:`, `docs:`, `chore:`, ...) — `feat:` triggers a minor version bump, `fix:`/`perf:` a patch bump, and a `BREAKING CHANGE:` footer (or `!` after the type) a major bump. Other types (`docs:`, `chore:`, `ci:`, `test:`, ...) don't trigger a release on their own.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
