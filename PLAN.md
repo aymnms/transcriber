@@ -61,6 +61,7 @@ Contrainte transverse à tous les jalons : **aucune régression macOS** (vérifi
 - [ ] Installeur Windows (Inno Setup/MSI)
 - [ ] Codesign/notarization macOS
 - [ ] Si un vrai Mac Intel ou un runner `macos-13` fonctionnel devient disponible un jour, envisager une vérification ponctuelle sur matériel physique en complément de la CI Rosetta (non bloquant : Rosetta est déjà une vérification x86_64 authentique, pas une simulation)
+- [ ] Bumper `actions/checkout`/`actions/setup-python` vers une version nativement Node 24 quand elle sortira (actuellement des warnings inoffensifs — GitHub force déjà le fallback Node 24, la CI reste verte, cf. journal 2026-08-14)
 
 ---
 
