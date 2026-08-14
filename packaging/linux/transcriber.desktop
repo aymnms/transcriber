@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=Transcriber
+Comment=Transcribe audio files to text with Whisper
+Exec=transcriber
+Icon=transcriber
+Categories=AudioVideo;Audio;Utility;
+Terminal=false
