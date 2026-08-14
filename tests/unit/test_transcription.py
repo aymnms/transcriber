@@ -1,4 +1,4 @@
-from domain.transcription import segments_to_text, output_path_for
+from domain.transcription import output_path_for, segments_to_text
 
 
 class FakeSegment:

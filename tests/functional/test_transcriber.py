@@ -1,6 +1,6 @@
 import pytest
 
-from platform_.transcriber import transcribe_to_file, TranscriptionError
+from platform_.transcriber import TranscriptionError, transcribe_to_file
 
 
 class FakeSegment:

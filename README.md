@@ -188,7 +188,8 @@ sips -z 256 256   assets/logo.png --out MyIcon.iconset/icon_256x256.png
 sips -z 512 512   assets/logo.png --out MyIcon.iconset/icon_256x256@2x.png
 sips -z 512 512   assets/logo.png --out MyIcon.iconset/icon_512x512.png
 cp assets/logo.png                MyIcon.iconset/icon_512x512@2x.png
-iconutil -c icns MyIcon.iconset
+iconutil -c icns MyIcon.iconset -o assets/MyIcon.icns
+rm -r MyIcon.iconset
 ```
 </details>
 

@@ -1,4 +1,4 @@
-from domain.whisper_models import is_valid_model_name, SUPPORTED_MODELS, DEFAULT_MODEL
+from domain.whisper_models import DEFAULT_MODEL, SUPPORTED_MODELS, is_valid_model_name
 
 
 def test_default_model_is_base():

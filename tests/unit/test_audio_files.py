@@ -1,4 +1,4 @@
-from domain.audio_files import is_supported_audio_extension, FILE_DIALOG_PATTERN
+from domain.audio_files import FILE_DIALOG_PATTERN, is_supported_audio_extension
 
 
 def test_accepts_known_audio_extension():

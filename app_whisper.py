@@ -1,12 +1,13 @@
-import tkinter as tk
-from tkinter import filedialog, messagebox
-from faster_whisper import WhisperModel
 import os
 import threading
+import tkinter as tk
+from tkinter import filedialog, messagebox
+
+from faster_whisper import WhisperModel
 
 from domain.audio_files import FILE_DIALOG_PATTERN
-from domain.whisper_models import SUPPORTED_MODELS, DEFAULT_MODEL
-from platform_.transcriber import transcribe_to_file, TranscriptionError
+from domain.whisper_models import DEFAULT_MODEL, SUPPORTED_MODELS
+from platform_.transcriber import TranscriptionError, transcribe_to_file
 
 selected_file = None
 model_choice = DEFAULT_MODEL
@@ -14,13 +15,19 @@ file_label = None
 model_menu = None
 root = None
 
+
 def show_loader_window():
     loader = tk.Toplevel()
     loader.title("Transcription en cours")
     loader.geometry("600x70")
     loader.resizable(False, False)
-    tk.Label(loader, text="La transcription est en cours. Cela peut prendre un moment...\nPlus le modèle est lourd et l'audio est long, plus la transcription prend du temps.").pack(pady=10)
+    loader_text = (
+        "La transcription est en cours. Cela peut prendre un moment...\n"
+        "Plus le modèle est lourd et l'audio est long, plus la transcription prend du temps."
+    )
+    tk.Label(loader, text=loader_text).pack(pady=10)
     return loader
+
 
 def show_done_window(output_path):
     def close_and_restart():
@@ -39,9 +46,11 @@ def show_done_window(output_path):
     tk.Label(done, text=f"Fichier sauvegardé :\n{output_path}", wraplength=300).pack(pady=5)
     tk.Button(done, text="OK", command=close_and_restart).pack(pady=5)
 
+
 def show_error_window(message):
     root.deiconify()
     messagebox.showerror("Erreur de transcription", message)
+
 
 def run_transcription():
     global selected_file, model_choice
@@ -63,15 +72,16 @@ def run_transcription():
 
     threading.Thread(target=transcribe_task, daemon=True).start()
 
+
 def browse_file():
     global selected_file
     path = filedialog.askopenfilename(
-        title="Choisir un fichier audio",
-        filetypes=[("Fichiers audio", FILE_DIALOG_PATTERN)]
+        title="Choisir un fichier audio", filetypes=[("Fichiers audio", FILE_DIALOG_PATTERN)]
     )
     if path:
         selected_file = path
         file_label.config(text=os.path.basename(path))
+
 
 def setup_main_window(root):
     global model_choice, file_label, model_menu
@@ -100,9 +110,11 @@ def setup_main_window(root):
 
     tk.Button(root, text="Transcrire", command=on_transcribe, bg="lightgreen").pack(pady=20)
 
+
 # 🔄 Point d'entrée principal
 if __name__ == "__main__":
     import multiprocessing
+
     multiprocessing.freeze_support()  # ← important pour Windows et PyInstaller
     root = tk.Tk()
     setup_main_window(root)
