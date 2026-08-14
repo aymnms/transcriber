@@ -1,6 +1,6 @@
 [project]
 name = "transcriber"
-version = "0.1.0"
+version = "0.2.0"
 description = "A simple, lightweight application for transcribing audio files into text with Whisper (OpenAI)."
 requires-python = ">=3.10,<3.13"
 [tool.semantic_release]
