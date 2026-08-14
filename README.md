@@ -80,6 +80,15 @@ A simple, lightweight application for transcribing audio files into text with Wh
 
 > Windows and Linux support is in active development (see [PLAN.md](./PLAN.md)). Only macOS builds are published today.
 
+### Platform support
+
+| OS | Runs | Verified by CI |
+|---|---|---|
+| macOS (Apple Silicon) | ✅ | ✅ |
+| macOS (Intel) | ✅ (expected — same codebase, no architecture-specific code) | ⚠️ not currently possible: GitHub Actions never assigns a runner to the `macos-13` job (not a quota/billing issue — see [AUDIT.md](./AUDIT.md#addendum--ci-macos-intel-non-obtenable-2026-08-14)) |
+| Windows | ✅ | ✅ |
+| Linux | ✅ (requires the `python3-tk` system package, see [Prerequisites](#prerequisites)) | ✅ |
+
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 <!-- USAGE EXAMPLES -->

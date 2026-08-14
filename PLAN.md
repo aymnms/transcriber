@@ -34,38 +34,40 @@ Contrainte transverse à tous les jalons : **aucune régression macOS** (vérifi
 - [x] J1.8 Nettoyer `requirements.txt` (`macholib` conditionné à `sys_platform == "darwin"` — `altgraph` est en réalité cross-platform, correction apportée à `AUDIT.md` §2.3/§2.5/§2.8-3 en cours de route), ajout de `requirements-dev.txt`, version Python documentée (`>=3.10,<3.13`)
 - [x] J1.9 Vérification : suite de tests verte localement (16/16) + smoke-test d'import de `app_whisper.py` avec les vraies dépendances installées (venv jetable) confirmant que le câblage domain/platform_/GUI ne casse rien. Pas de lancement interactif complet de la fenêtre Tkinter (pas de session graphique pilotable ici) — la confirmation comportementale complète macOS reste à la charge de l'utilisateur ou de la CI (J2)
 
-### 🔵 En cours
-- [ ] J2.1 `.github/workflows/ci.yml` : matrice `macos-13` / `macos-14` / `windows-latest` / `ubuntu-latest`
-
-### À faire
-
-**J2 — CI multi-OS** (réf. AUDIT §2.5, §4 du brief)
 - [x] J2.1 `.github/workflows/ci.yml` : matrice `macos-latest` (Apple Silicon), `windows-latest`, `ubuntu-latest`, exécutant `tests/unit` + `tests/functional`
 - [x] J2.2 Installation de `python3-tk` dans l'étape `ubuntu-latest` de la CI (réf. AUDIT §2.5 Linux)
 - [x] J2.3 CI verte confirmée sur les 3 configurations restantes (Linux, Windows, macOS Apple Silicon)
   > `macos-13` (Intel) a été retiré de la matrice après 1h30 sans qu'aucun runner ne lui soit jamais attribué — cause non confirmable depuis l'API publique (pas un problème de quota, pas d'incident GitHub signalé). Décision utilisateur (2026-08-14) : passer à `macos-latest` seul plutôt que de bloquer indéfiniment. Détail complet dans AUDIT.md « Addendum — CI macOS Intel non obtenable ».
+- [x] J3.1 Commande de build PyInstaller Windows ajoutée au README (`assets/logo.ico`)
+- [x] J3.2 Vérifié par CI (job `test (Windows)`, incluant `tests/functional/test_app_entrypoint.py`) : import complet de `app_whisper.py` sans erreur
+- [x] J3.3 README corrigé sur l'état réel de la disponibilité Windows (retrait de la mention d'un `.exe` déjà publié)
+- [x] J4.1 Dépendance système `python3-tk` documentée dans le README
+- [x] J4.2 Commande de build PyInstaller Linux ajoutée au README (`assets/logo.png`)
+- [x] J4.3 Vérifié par CI (job `test (Linux)`, `python3-tk` installé) : import complet sans erreur
+- [x] J5.1 Smoke test E2E (`tests/e2e/test_transcribe_sample_audio.py`, modèle `tiny` réel sur `assets/audios/NewRecording.m4a` via `platform_/transcriber.py`), marqueur pytest `e2e` dédié (hors suite rapide), job CI séparé `e2e` sur la matrice. Validé en local (macOS ARM, dépendances réelles) et en CI (Linux, Windows, macOS Apple Silicon) : transcription correcte du fichier échantillon.
+- [x] J5.2 CI verte simultanément sur macOS Apple Silicon, Windows, Linux (jobs `test` ET `e2e`, run [31784867450](https://github.com/aymnms/transcriber/actions/runs/31784867450), 6/6 jobs verts)
+  > macOS Intel exclu du périmètre CI automatisé pour la raison documentée ci-dessus — aucune preuve automatisée disponible pour cette configuration spécifique, risque jugé faible (aucun code spécifique à l'architecture Intel/ARM dans le dépôt).
+- [x] J5.3 README mis à jour (matrice de support par OS, instructions de build Windows/Linux, prérequis Linux, correction de la disponibilité réelle)
+- [x] J5.4 Revue finale de `AUDIT.md`/`PLAN.md` — ce plan est à jour, addendums CI documentés
 
-**J3 — Portage Windows** (réf. AUDIT §2.5 Windows, §2.6, §2.8-6, §2.8-8)
-- [ ] J3.1 Ajouter la commande de build PyInstaller Windows au README (réutilise `assets/logo.ico` déjà présent)
-- [ ] J3.2 Vérifier par CI (job `windows-latest`) que `python app_whisper.py --help`/smoke-import démarre sans erreur d'import (pas de dépendance macOS-only chargée)
-- [ ] J3.3 Corriger le README sur l'état réel de la disponibilité Windows (retirer la mention d'un `.exe` déjà publié tant qu'aucune release Windows n'existe)
+### 🔵 En cours
+*(rien — MVP portable atteint sur le périmètre CI disponible, voir note ci-dessous)*
 
-**J4 — Portage Linux** (réf. AUDIT §2.5 Linux, §2.6, §2.8-5, §2.8-6)
-- [ ] J4.1 Documenter la dépendance système `python3-tk` dans le README (prérequis, non installable via pip)
-- [ ] J4.2 Ajouter la commande de build PyInstaller Linux au README (réutilise `assets/logo.png`)
-- [ ] J4.3 Vérifier par CI (job `ubuntu-latest`, avec `python3-tk` installé) le smoke-import complet
-
-**J5 — MVP portable** (réf. AUDIT §2.6, §3 du brief)
-- [x] J5.1 Smoke test E2E (`tests/e2e/test_transcribe_sample_audio.py`, modèle `tiny` réel sur `assets/audios/NewRecording.m4a` via `platform_/transcriber.py`), marqueur pytest `e2e` dédié (hors suite rapide), job CI séparé `e2e` sur les 4 configurations. Validé en local (macOS ARM, dépendances réelles installées) : transcription correcte du fichier échantillon.
-- [x] J5.2 CI verte simultanément sur macOS Apple Silicon, Windows, Linux (jobs `test` ET `e2e`)
-  > macOS Intel exclu du périmètre CI automatisé pour la raison documentée en J2.3/AUDIT.md — aucune preuve automatisée disponible pour cette configuration spécifique, risque jugé faible (aucun code spécifique à l'architecture Intel/ARM dans le dépôt).
-- [ ] J5.3 Mise à jour finale du README (matrice de support, instructions de build par OS)
-- [ ] J5.4 Revue finale de `AUDIT.md`/`PLAN.md` pour clôturer le plan
+### À faire
 
 **Backlog (hors périmètre MVP, réf. AUDIT §2.8-7)**
 - [ ] Empaquetage AppImage pour Linux
 - [ ] Installeur Windows (Inno Setup/MSI)
 - [ ] Codesign/notarization macOS
+- [ ] Revisiter la couverture CI macOS Intel si un runner `macos-13` fonctionnel redevient disponible, ou si un accès à une machine Intel réelle permet une vérification manuelle ponctuelle
+
+---
+
+## État final (2026-08-14)
+
+**MVP portable atteint** au sens du brief (§3), avec une réserve documentée et validée avec l'utilisateur : l'application se lance et exécute la transcription de bout en bout, vérifié par CI verte sur **macOS Apple Silicon, Windows et Linux** (`test` + `e2e`, run [31784867450](https://github.com/aymnms/transcriber/actions/runs/31784867450)). macOS Intel n'a **pas** de preuve CI automatisée — runner `macos-13` indisponible côté GitHub Actions pour une cause non diagnosticable depuis ce dépôt — mais reste supporté par le code (aucune branche Intel/ARM dans la base) et par les instructions de build existantes (cross-build Rosetta, inchangées).
+
+Aucune régression macOS introduite : le comportement observable de `app_whisper.py` est identique à l'original sur le chemin nominal, avec un bug latent corrigé (blocage silencieux en cas d'échec de transcription) et une dépendance PyPI rompue corrigée (`av`).
 
 ---
 
@@ -78,3 +80,4 @@ Contrainte transverse à tous les jalons : **aucune régression macOS** (vérifi
 - 2026-08-14 — README corrigé (retrait de la fausse mention `.exe` déjà disponible, ajout du prérequis `python3-tk` Linux, sections de build Windows/Linux). J5.1 ajouté : test E2E réel (`tests/e2e`), validé en local avec les vraies dépendances (téléchargement + transcription réussie du fichier échantillon), job CI `e2e` ajouté sur la même matrice 4 OS.
 - 2026-08-14 — Ajout d'un groupe `concurrency` à la CI pour annuler les runs redondants. État confirmé sur le run le plus à jour : `test` et `e2e` verts sur Linux, Windows, macOS Apple Silicon (6/8 jobs). Les 2 jobs `macos-13` restent `queued` sans assignation de runner malgré plusieurs runs et plus d'une heure d'attente — dépôt public donc pas un problème de quota/facturation. Cause exacte non confirmée (pas d'incident GitHub signalé, pas de dépréciation annoncée trouvée). Question posée à l'utilisateur sur la marche à suivre → réponse initiale : continuer à attendre.
 - 2026-08-14 — Après 30 minutes supplémentaires de vérification (1h30 cumulée), toujours aucun mouvement sur `macos-13`. Nouvelle question posée à l'utilisateur → décision : retirer `macos-13` de la matrice CI, garder `macos-latest` (Apple Silicon) comme seul signal macOS. J2 et J5.2 marqués terminés sur cette base. Écart documenté dans AUDIT.md et en introduction de ce plan.
+- 2026-08-14 — Push du retrait de `macos-13` : run [31784867450](https://github.com/aymnms/transcriber/actions/runs/31784867450) vert de bout en bout en ~90s (6/6 jobs : `test`+`e2e` sur Linux, Windows, macOS Apple Silicon). README complété (matrice de support par OS). Tous les jalons J1 à J5 sont maintenant terminés — MVP portable atteint sur le périmètre CI disponible, réserve macOS Intel documentée et actée avec l'utilisateur.
