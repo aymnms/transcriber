@@ -256,9 +256,9 @@ Commit messages must follow [Conventional Commits](https://www.conventionalcommi
 <!-- ROADMAP -->
 ## Roadmap
 
-- [ ] AppImage packaging for Linux
-- [ ] Windows installer (Inno Setup / MSI)
-- [ ] macOS codesigning & notarization
+- [x] AppImage packaging for Linux
+- [x] Windows installer (Inno Setup)
+- [ ] macOS codesigning & notarization — requires an active Apple Developer Program membership ($99/year), not currently available
 
 See the [open issues](https://github.com/aymnms/transcriber/issues) for a full list of proposed features and known issues, and [`PLAN.md`](./PLAN.md) / [`AUDIT.md`](./AUDIT.md) for the detailed engineering history of the macOS → Windows/Linux migration.
 

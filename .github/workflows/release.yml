@@ -101,10 +101,13 @@ jobs:
       - name: Zip bundle
         run: Compress-Archive -Path "dist/Transcriber/*" -DestinationPath "Transcriber-Windows.zip"
 
+      - name: Build installer
+        run: iscc /DMyAppVersion=${{ needs.release.outputs.version }} packaging\windows\installer.iss
+
       - name: Upload to release
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: gh release upload "${{ needs.release.outputs.tag }}" Transcriber-Windows.zip
+        run: gh release upload "${{ needs.release.outputs.tag }}" Transcriber-Windows.zip Transcriber-Setup.exe
 
   build-linux:
     name: Build Linux bundle
@@ -133,7 +136,22 @@ jobs:
           pyinstaller --windowed --onedir app_whisper.py --name "transcriber" --icon assets/logo.png
           tar -C dist -czf transcriber-Linux.tar.gz transcriber
 
+      - name: Assemble AppDir
+        run: |
+          mkdir -p Transcriber.AppDir/usr/bin
+          cp -r dist/transcriber/* Transcriber.AppDir/usr/bin/
+          cp packaging/linux/transcriber.desktop Transcriber.AppDir/transcriber.desktop
+          cp assets/logo.png Transcriber.AppDir/transcriber.png
+          ln -s usr/bin/transcriber Transcriber.AppDir/AppRun
+
+      - name: Build AppImage
+        run: |
+          curl -fsSL -o appimagetool.AppImage https://github.com/AppImage/appimagetool/releases/download/continuous/appimagetool-x86_64.AppImage
+          chmod +x appimagetool.AppImage
+          ./appimagetool.AppImage --appimage-extract
+          ./squashfs-root/AppRun Transcriber.AppDir transcriber-x86_64.AppImage
+
       - name: Upload to release
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: gh release upload "${{ needs.release.outputs.tag }}" transcriber-Linux.tar.gz
+        run: gh release upload "${{ needs.release.outputs.tag }}" transcriber-Linux.tar.gz transcriber-x86_64.AppImage
