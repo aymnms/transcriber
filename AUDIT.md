@@ -160,6 +160,19 @@ Conséquence assumée : la CI ne fournit **plus de preuve automatisée pour macO
 - Les instructions de build Intel existantes (cross-build via Rosetta, cf. README « For Macos (Intel) ») restent documentées et inchangées.
 - Si un accès à une machine Intel réelle (ou un runner `macos-13` fonctionnel) redevient disponible plus tard, une vérification manuelle ponctuelle reste possible sans changement de code.
 
+## Addendum — résolution : Intel via Rosetta sur macos-latest (2026-08-14)
+
+Piste explorée sur une branche dédiée (`experiment/intel-build-via-rosetta`) : au lieu d'attendre un runner `macos-13`, peut-on obtenir une vraie exécution x86_64 **depuis le runner `macos-latest` (Apple Silicon)**, via Rosetta 2 ?
+
+Vérifications faites (job `rosetta-diagnostic`, logs consultés) :
+- Le Python fourni par `actions/setup-python@v5` sur `macos-latest` est un **binaire universal2** (`lipo -archs` → `x86_64 arm64`), pas un binaire arm64 seul.
+- `arch -x86_64 python3 -c "import platform; print(platform.machine())"` retourne bien `x86_64` — Rosetta 2 s'installe et fonctionne sans problème sur le runner hébergé (`softwareupdate --install-rosetta --agree-to-license` réussit en quelques secondes).
+- Le Python système (`/usr/bin/python3`, fourni par les Command Line Tools) est également universal (`x86_64 arm64e`) et se comporte pareil sous Rosetta.
+
+Conséquence : il est possible de construire un **virtualenv x86_64 complet** (`arch -x86_64 python3 -m venv ...`), d'y installer les dépendances (`pip` résout alors correctement des wheels `macosx_x86_64`, confirmé en pratique avec `numpy`, `ctranslate2`, `av`, `onnxruntime`, `faster-whisper`), et d'y exécuter la suite de tests — y compris le test E2E de transcription réelle — en x86_64 authentique, sans jamais avoir besoin d'un runner `macos-13`.
+
+Deux jobs CI permanents ont été ajoutés sur cette base : `test (macOS Intel via Rosetta)` et `e2e (macOS Intel via Rosetta)`, tous deux vérifiés verts (run [31787156790](https://github.com/aymnms/transcriber/actions/runs/31787156790)). Cela **referme le trou de couverture macOS Intel** documenté juste au-dessus, sans dépendre de la disponibilité d'un runner `macos-13` — cette exécution sous Rosetta est la vérification la plus proche d'un vrai Mac Intel qu'on puisse obtenir sans matériel physique.
+
 ## Questions ouvertes (aucune bloquante à ce stade)
 
 Les deux questions structurantes posées par le brief de mission (§2.3 accélération matérielle, §2.6 format de distribution) sont **tranchées ci-dessus**, directement déductibles du code et des dépendances — pas de remontée nécessaire.
