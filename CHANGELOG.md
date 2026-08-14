@@ -2,6 +2,33 @@
 
 <!-- version list -->
 
+## v0.3.0 (2026-08-14)
+
+### Continuous Integration
+
+- Skip the CI matrix on docs-only changes
+  ([`5644361`](https://github.com/aymnms/transcriber/commit/5644361d058ace1eb444c8e916ad4c91b37f88c7))
+
+- **experiment**: Add AppImage and Windows installer diagnostic jobs
+  ([`473351d`](https://github.com/aymnms/transcriber/commit/473351d20b0eeb317bc2d9b8390d420e494b4a64))
+
+### Documentation
+
+- Close out J6 — automated release validated in production
+  ([`b749af1`](https://github.com/aymnms/transcriber/commit/b749af18489b17c702095d55cb3fe57fa0c7d471))
+
+- Fix broken table-of-contents anchor link (#feature -> #features)
+  ([`83e687b`](https://github.com/aymnms/transcriber/commit/83e687b6da8720694c9d12d40182e6438612aa92))
+
+- Revamp README with a cleaner, more complete structure
+  ([`74f08b1`](https://github.com/aymnms/transcriber/commit/74f08b1888acf65cc21aa8000ef5db9cec50684b))
+
+### Features
+
+- **release**: Attach AppImage and Windows installer to releases
+  ([`6f658b6`](https://github.com/aymnms/transcriber/commit/6f658b675667ab69b81079d4741a33dfca80e569))
+
+
 ## v0.2.0 (2026-08-14)
 
 ### Bug Fixes
