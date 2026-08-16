@@ -1,4 +1,5 @@
 import os
+import queue
 import threading
 import tkinter as tk
 from tkinter import filedialog, messagebox
@@ -56,21 +57,38 @@ def run_transcription():
     global selected_file, model_choice
 
     loader = show_loader_window()
+    result_queue = queue.Queue()
 
     def transcribe_task():
+        # Runs off the main thread: must never touch Tk widgets directly
+        # (Tcl/Tk is not thread-safe — doing so hangs the UI on Windows).
+        # Results are handed back through a thread-safe queue instead, and
+        # applied to the UI by poll_result(), which runs on the main thread.
         try:
             output_path = transcribe_to_file(
                 selected_file, model_factory=lambda: WhisperModel(model_choice)
             )
         except TranscriptionError as exc:
-            loader.destroy()
-            show_error_window(str(exc))
+            result_queue.put(("error", str(exc)))
+            return
+
+        result_queue.put(("done", output_path))
+
+    def poll_result():
+        try:
+            status, payload = result_queue.get_nowait()
+        except queue.Empty:
+            loader.after(100, poll_result)
             return
 
         loader.destroy()
-        show_done_window(output_path)
+        if status == "error":
+            show_error_window(payload)
+        else:
+            show_done_window(payload)
 
     threading.Thread(target=transcribe_task, daemon=True).start()
+    loader.after(100, poll_result)
 
 
 def browse_file():
