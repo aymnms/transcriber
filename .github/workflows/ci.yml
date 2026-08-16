@@ -158,6 +158,8 @@ jobs:
     name: linux-glibc-diagnostic (build inside ubuntu:22.04 container)
     runs-on: ubuntu-latest
     container: ubuntu:22.04
+    env:
+      DEBIAN_FRONTEND: noninteractive
     steps:
       - name: Install prerequisites (no git/curl/tk in the base image)
         run: |
