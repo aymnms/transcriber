@@ -114,26 +114,34 @@ jobs:
     needs: release
     if: needs.release.outputs.released == 'true'
     runs-on: ubuntu-latest
+    # Built inside an ubuntu:22.04 container (glibc 2.35) rather than directly
+    # on ubuntu-latest (glibc 2.39+): PyInstaller bundles libpython linked
+    # against the build machine's glibc, so building on a newer glibc than
+    # most users have produces a binary that fails to start for them
+    # ("GLIBC_2.38 not found"). A container decouples this from the runner
+    # image's own lifecycle (ubuntu-22.04 as a *runner label* is itself
+    # being deprecated from 2026-09-17 — see AUDIT.md addenda for J9).
+    container: ubuntu:22.04
+    env:
+      DEBIAN_FRONTEND: noninteractive
     permissions:
       contents: write
     steps:
+      - name: Install prerequisites (bare image has neither git nor Python)
+        run: |
+          apt-get update
+          apt-get install -y git curl ca-certificates python3 python3-venv python3-pip python3-tk gh
+
       - uses: actions/checkout@v4
         with:
           ref: ${{ needs.release.outputs.tag }}
 
-      - uses: actions/setup-python@v5
-        with:
-          python-version: "3.11"
-
-      - name: Install Tk system dependency
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y python3-tk
-
       - name: Build bundle
         run: |
-          python -m pip install --upgrade pip -r requirements.txt
-          pyinstaller --windowed --onedir app_whisper.py --name "transcriber" --icon assets/logo.png
+          python3 -m venv .venv
+          .venv/bin/python -m pip install --upgrade pip
+          .venv/bin/python -m pip install -r requirements.txt
+          .venv/bin/pyinstaller --windowed --onedir app_whisper.py --name "transcriber" --icon assets/logo.png
           tar -C dist -czf transcriber-Linux.tar.gz transcriber
 
       - name: Assemble AppDir
