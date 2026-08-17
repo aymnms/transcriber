@@ -64,14 +64,17 @@ def run_transcription():
         # (Tcl/Tk is not thread-safe — doing so hangs the UI on Windows).
         # Results are handed back through a thread-safe queue instead, and
         # applied to the UI by poll_result(), which runs on the main thread.
+        print("[DEBUG] transcribe_task: thread started", flush=True)
         try:
             output_path = transcribe_to_file(
                 selected_file, model_factory=lambda: WhisperModel(model_choice)
             )
         except TranscriptionError as exc:
+            print("[DEBUG] transcribe_task: TranscriptionError:", exc, flush=True)
             result_queue.put(("error", str(exc)))
             return
 
+        print("[DEBUG] transcribe_task: done, queuing result", flush=True)
         result_queue.put(("done", output_path))
 
     def poll_result():
@@ -81,6 +84,7 @@ def run_transcription():
             loader.after(100, poll_result)
             return
 
+        print("[DEBUG] poll_result: got", status, flush=True)
         loader.destroy()
         if status == "error":
             show_error_window(payload)

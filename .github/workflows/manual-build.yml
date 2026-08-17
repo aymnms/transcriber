@@ -21,18 +21,18 @@ jobs:
         with:
           python-version: "3.11"
 
-      - name: Build bundle
+      - name: Build bundle (console visible, for debugging J9-1)
         run: |
           python -m pip install --upgrade pip -r requirements.txt
-          pyinstaller --windowed --onedir app_whisper.py --name "Transcriber" --icon assets/logo.ico
+          pyinstaller --onedir app_whisper.py --name "Transcriber" --icon assets/logo.ico
 
       - name: Zip bundle
-        run: Compress-Archive -Path "dist/Transcriber/*" -DestinationPath "Transcriber-Windows.zip"
+        run: Compress-Archive -Path "dist/Transcriber/*" -DestinationPath "Transcriber-Windows-debug.zip"
 
       - uses: actions/upload-artifact@v4
         with:
-          name: Transcriber-Windows
-          path: Transcriber-Windows.zip
+          name: Transcriber-Windows-debug
+          path: Transcriber-Windows-debug.zip
 
   build-linux:
     name: Build Linux bundle (test)
