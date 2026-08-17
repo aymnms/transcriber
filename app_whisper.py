@@ -1,14 +1,24 @@
 import os
-import queue
-import threading
-import tkinter as tk
-from tkinter import filedialog, messagebox
 
-from faster_whisper import WhisperModel
+# Must run before faster_whisper (and therefore huggingface_hub) is imported.
+# huggingface_hub already retries with a timeout per attempt (default 10s,
+# up to 5 attempts) on its own, but a network that silently drops packets
+# rather than refusing the connection (common on restrictive corporate
+# proxies) can still make each attempt run close to its full timeout before
+# the retry logic gives up — tightening it makes that bounded wait shorter
+# without weakening it for a normal, merely slow, connection.
+os.environ.setdefault("HF_HUB_DOWNLOAD_TIMEOUT", "8")
 
-from domain.audio_files import FILE_DIALOG_PATTERN
-from domain.whisper_models import DEFAULT_MODEL, SUPPORTED_MODELS
-from platform_.transcriber import TranscriptionError, transcribe_to_file
+import queue  # noqa: E402
+import threading  # noqa: E402
+import tkinter as tk  # noqa: E402
+from tkinter import filedialog, messagebox  # noqa: E402
+
+from faster_whisper import WhisperModel  # noqa: E402
+
+from domain.audio_files import FILE_DIALOG_PATTERN  # noqa: E402
+from domain.whisper_models import DEFAULT_MODEL, SUPPORTED_MODELS  # noqa: E402
+from platform_.transcriber import TranscriptionError, transcribe_to_file  # noqa: E402
 
 selected_file = None
 model_choice = DEFAULT_MODEL
