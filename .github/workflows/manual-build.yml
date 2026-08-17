@@ -56,6 +56,14 @@ jobs:
           .venv/bin/pyinstaller --windowed --onedir app_whisper.py --name "transcriber" --icon assets/logo.png
           tar -C dist -czf transcriber-Linux.tar.gz transcriber
 
+      # Upload the tarball right away so it survives even if AppImage
+      # packaging below turns out to have its own separate problem in a
+      # container (it's already known to work outside one, in production).
+      - uses: actions/upload-artifact@v4
+        with:
+          name: transcriber-Linux-tarball
+          path: transcriber-Linux.tar.gz
+
       - name: Assemble AppDir
         run: |
           mkdir -p Transcriber.AppDir/usr/bin
@@ -65,15 +73,19 @@ jobs:
           ln -s usr/bin/transcriber Transcriber.AppDir/AppRun
 
       - name: Build AppImage
+        id: appimage
+        continue-on-error: true
         run: |
+          set -x
           curl -fsSL -o appimagetool.AppImage https://github.com/AppImage/appimagetool/releases/download/continuous/appimagetool-x86_64.AppImage
           chmod +x appimagetool.AppImage
+          ldd --version | head -1
           ./appimagetool.AppImage --appimage-extract
+          ./squashfs-root/AppRun --version || true
           ./squashfs-root/AppRun Transcriber.AppDir transcriber-x86_64.AppImage
 
       - uses: actions/upload-artifact@v4
+        if: steps.appimage.outcome == 'success'
         with:
-          name: transcriber-Linux
-          path: |
-            transcriber-Linux.tar.gz
-            transcriber-x86_64.AppImage
+          name: transcriber-Linux-appimage
+          path: transcriber-x86_64.AppImage
