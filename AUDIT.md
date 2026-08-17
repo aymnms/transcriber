@@ -186,3 +186,21 @@ dlopen: /lib/x86_64-linux-gnu/libm.so.6: version `GLIBC_2.38' not found (require
 Sources consultées : [actions/runner-images issue #14254 — dépréciation ubuntu-22.04](https://github.com/actions/runner-images/issues/14254).
 
 **Confirmation obtenue (logs CI, 2026-08-17)** : le premier run diagnostic dans le conteneur `ubuntu:22.04` échouait dès l'étape de build avec `python: /lib/x86_64-linux-gnu/libm.so.6: version 'GLIBC_2.38' not found (required by /__t/Python/3.11.15/x64/lib/libpython3.11.so.1.0)`. Cause exacte : `actions/setup-python@v5` télécharge un **binaire Python précompilé** (3.11.15) qui exige lui-même `GLIBC_2.38` pour s'exécuter — donc l'interpréteur ne démarre même pas dans un conteneur dont la glibc est plus ancienne (2.35), avant toute installation de dépendance. Confirmé indépendamment par reproduction locale (Docker, `--platform linux/amd64`) : le `python3` fourni par `apt` dans le conteneur (3.10.12, glibc-native) build sans erreur et produit un binaire dont le plafond `GLIBC` mesuré est bien `2.35`. Correctif retenu : abandonner `actions/setup-python` pour ce job et utiliser le `python3`/`venv` du conteneur.
+
+### Addendum — blocage Windows persistant : téléchargement du modèle, pas un bug applicatif (2026-08-17)
+
+Une fois `J9-1` (widgets Tk mutés hors du thread principal) corrigé et confirmé fonctionnel sous Linux avec un code strictement identique, l'utilisateur a signalé que le blocage persistait spécifiquement sous Windows. Un build de diagnostic (console visible, traces `[DEBUG]` temporaires dans `platform_/transcriber.py`) a isolé le point de blocage exact :
+
+```
+[DEBUG] transcribe_task: thread started
+[DEBUG] loading model...
+config.json: 2.25kB [00:00, 4.49MB/s]
+```
+
+Le téléchargement s'arrête net juste après `config.json` (métadonnées, quasi instantané), avant tout octet du fichier de poids du modèle. Ce n'est donc **pas** un bug de threading Tk (déjà exclu) mais un blocage réseau pendant le téléchargement du modèle depuis le Hugging Face Hub — cohérent avec un réseau restrictif (pare-feu/proxy d'entreprise ou institutionnel) qui autorise l'API principale `huggingface.co` mais bloque ou ignore silencieusement les connexions vers le CDN de fichiers volumineux.
+
+Correctif appliqué : `HF_HUB_DOWNLOAD_TIMEOUT` resserré à 8s (`app_whisper.py`, fixé avant l'import de `faster_whisper`, car `huggingface_hub` lit cette variable d'environnement à l'import). `huggingface_hub==0.30.2` retente déjà jusqu'à 5 fois avec ce délai, bornant l'attente pire cas à environ 90 secondes au lieu d'un blocage potentiellement indéfini — **si** l'échec se manifeste comme un timeout ou une connexion refusée normale.
+
+**Insuffisant en pratique** : retesté par l'utilisateur en attendant largement plus de 90 secondes, le blocage persiste à l'identique. Ceci renforce l'hypothèse d'un véritable « trou noir » réseau (paquets silencieusement ignorés plutôt que refusés ou expirés au niveau TCP) — un cas contre lequel aucun timeout côté client (`requests`/`huggingface_hub`) ne peut garantir un échec propre, puisque la tentative de connexion au niveau OS peut elle-même rester bloquée au-delà du délai configuré selon certaines configurations de proxy/pare-feu.
+
+**Conclusion** : ce n'est très probablement plus un défaut du code de l'application (déjà corrigé pour la partie qui l'était réellement, `J9-1`), mais une limite du réseau spécifique à la machine Windows testée. Suivi ouvert dans l'issue GitHub [#2](https://github.com/aymnms/transcriber/issues/2) — prochaine étape : confirmer via un test sur un autre réseau (partage de connexion mobile) depuis la même machine.
